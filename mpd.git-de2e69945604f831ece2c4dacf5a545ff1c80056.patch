@@ -1,0 +1,87 @@
+From: jat <jat@09075e82-0dd4-0310-85a5-a0d7c8717e4f>
+Date: Mon, 4 Jun 2007 23:14:38 +0000 (+0000)
+Subject: Set a flag if we've sent the player process SIGSTOP so that we know not to
+X-Git-Url: http://git.infradead.org/?p=users%2Fdwmw2%2Fmpd.git;a=commitdiff_plain;h=de2e69945604f831ece2c4dacf5a545ff1c80056
+
+Set a flag if we've sent the player process SIGSTOP so that we know not to
+wait for it to complete an action which it never will.
+
+
+git-svn-id: https://svn.musicpd.org/mpd/trunk@6488 09075e82-0dd4-0310-85a5-a0d7c8717e4f
+---
+
+diff --git a/src/player.c b/src/player.c
+index beff9b3..096503b 100644
+--- a/src/player.c
++++ b/src/player.c
+@@ -110,11 +110,13 @@ void player_sigChldHandler(int pid, int status)
+ 
+ int playerInit(void)
+ {
++	PlayerControl *pc = &(getPlayerData()->playerControl);
+ 	int pid;
+ 
+ 	pid = player_pid;
+ 	if (pid > 0) {
+ 		kill(pid, SIGCONT);
++		pc->wait = 0;
+ 		return 0;
+ 	}
+ 
+@@ -124,8 +126,6 @@ int playerInit(void)
+ 	{
+ 		clock_t start = clock();
+ 
+-		PlayerControl *pc = &(getPlayerData()->playerControl);
+-
+ 		unblockSignals();
+ 
+ 		setSigHandlersForDecoder();
+@@ -184,16 +184,22 @@ int playerInit(void)
+ 
+ int playerWait(int fd)
+ {
++	PlayerControl *pc = &(getPlayerData()->playerControl);
+ 	int pid;
+ 
++	if (pc->wait)
++		return 0;
++
+ 	if (playerStop(fd) < 0)
+ 		return -1;
+ 
+ 	playerCloseAudio();
+ 
+ 	pid = player_pid;
+-	if (pid > 0)
++	if (pid > 0) {
++		pc->wait = 1;
+ 		kill(pid, SIGSTOP);
++	}
+ 
+ 	return 0;
+ }
+diff --git a/src/player.h b/src/player.h
+index de44f8e..17dcf16 100644
+--- a/src/player.h
++++ b/src/player.h
+@@ -57,6 +57,7 @@
+ #define PLAYER_METADATA_STATE_WRITE     2
+ 
+ typedef struct _PlayerControl {
++	volatile mpd_sint8 wait;
+ 	volatile mpd_sint8 stop;
+ 	volatile mpd_sint8 play;
+ 	volatile mpd_sint8 pause;
+diff --git a/src/playerData.c b/src/playerData.c
+index 30ff6d6..380e4a1 100644
+--- a/src/playerData.c
++++ b/src/playerData.c
+@@ -118,6 +118,7 @@ void initPlayerData(void)
+ 		      buffered_chunks * sizeof(mpd_sint8));
+ 	buffer->acceptMetadata = 0;
+ 
++	playerData_pd->playerControl.wait = 0;
+ 	playerData_pd->playerControl.stop = 0;
+ 	playerData_pd->playerControl.pause = 0;
+ 	playerData_pd->playerControl.play = 0;
