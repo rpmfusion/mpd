@@ -1,3 +1,5 @@
+%define _default_patch_fuzz 2
+
 Name:           mpd
 Version:        0.13.2
 Release:        1%{?dist}
@@ -139,6 +141,7 @@ fi
 %changelog
 * Fri Jul 25 2008 Adrian Reber <adrian@lisas.de> - 0.13.2-1
 - updated to 0.13.2
+- added _default_patch_fuzz define
 
 * Thu May 29 2008 Hans de Goede <j.w.r.degoede@hhs.nl> - 0.13.1-3
 - Fix mpd crashing when reading in modtracker files (rh bug 448964)
