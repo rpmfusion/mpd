@@ -2,7 +2,7 @@
 
 Name:           mpd
 Version:        0.13.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -139,6 +139,9 @@ fi
 %ghost %{_localstatedir}/lib/%{name}/mpdstate
 
 %changelog
+* Sun Sep 28 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info - 0.13.2-2
+- rebuild
+
 * Fri Jul 25 2008 Adrian Reber <adrian@lisas.de> - 0.13.2-1
 - updated to 0.13.2
 - added _default_patch_fuzz define
