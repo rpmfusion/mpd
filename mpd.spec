@@ -1,6 +1,6 @@
 Name:           mpd
 Version:        0.14
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -136,7 +136,7 @@ fi
 %ghost %{_localstatedir}/lib/%{name}/mpdstate
 
 %changelog
-* Sat Dec 27 2008 Adrian Reber <adrian@lisas.de> - 0.14-2
+* Sat Dec 27 2008 Adrian Reber <adrian@lisas.de> - 0.14-3
 - updated to 0.14 (#229, #280)
 - add mpd user to group pulse-rt (#230)
 - added BR lame-devel, wavpack-devel, ffmpeg-devel
