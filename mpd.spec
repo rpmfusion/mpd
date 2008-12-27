@@ -1,18 +1,13 @@
-%define _default_patch_fuzz 2
-
 Name:           mpd
-Version:        0.13.2
+Version:        0.14
 Release:        2%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
-URL:            http://www.musicpd.org/
-Source:         http://www.musicpd.org/uploads/files/mpd-0.13.2.tar.gz
+URL:            http://mpd.wikia.com/
+Source:         http://downloads.sourceforge.net/musicpd/mpd-0.14.tar.bz2
 Source1:        mpd.init
 Source2:        95-grant-audio-devices-to-mpd.fdi
-Patch0:         mpd.git-ab00513022af940b398601556bfb6256ff220546.patch
-Patch1:         mpd.git-1f620ed803e4b5c69b875bb36519c3299022fe9d.patch
-Patch2:         mpd.git-de2e69945604f831ece2c4dacf5a545ff1c80056.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -33,6 +28,9 @@ BuildRequires:  avahi-devel
 BuildRequires:  jack-audio-connection-kit-devel
 BuildRequires:  faad2-devel
 BuildRequires:  libmad-devel
+BuildRequires:  lame-devel
+BuildRequires:  ffmpeg-devel
+BuildRequires:  wavpack-devel
 Requires(pre):  shadow-utils
 Requires(post): chkconfig
 Requires(preun): chkconfig /sbin/service
@@ -47,12 +45,9 @@ especially if your a console junkie, like frontend options, or restart X often.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
 
 %build
-%configure
+%configure --enable-mod 
 make %{?_smp_mflags}
 
 %install
@@ -72,10 +67,10 @@ touch $RPM_BUILD_ROOT%{_localstatedir}/lib/%{name}/mpdstate
 install -p -m644 doc/mpdconf.example $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
 %{__sed} -i -e "s,~/music,%{_localstatedir}/lib/%{name}/music,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
 %{__sed} -i -e "s,~/.mpd/playlists,%{_localstatedir}/lib/%{name}/playlists,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
-%{__sed} -i -e "s,~/.mpd/mpd.log,%{_localstatedir}/lib/%{name}/mpd.log,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
-%{__sed} -i -e "s,~/.mpd/mpd.error,%{_localstatedir}/lib/%{name}/mpd.error,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
-%{__sed} -i -e "s,~/.mpd/mpd.db,%{_localstatedir}/lib/%{name}/mpd.db,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
-%{__sed} -i -e "s,~/.mpd/mpdstate,%{_localstatedir}/lib/%{name}/mpdstate,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
+%{__sed} -i -e "s,~/.mpd/log,%{_localstatedir}/lib/%{name}/mpd.log,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
+%{__sed} -i -e "s,~/.mpd/error-log,%{_localstatedir}/lib/%{name}/mpd.error,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
+%{__sed} -i -e "s,~/.mpd/database,%{_localstatedir}/lib/%{name}/mpd.db,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
+%{__sed} -i -e "s,~/.mpd/state,%{_localstatedir}/lib/%{name}/mpdstate,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
 %{__sed} -i -e "s,#state_file,state_file,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
 %{__sed} -i -e 's,#user                            "nobody",user "mpd",g' $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
 %{__sed} -e "s,@bindir@,%{_bindir},g;s,@var@,%{_localstatedir},g" %{SOURCE1} > $RPM_BUILD_ROOT%{_initrddir}/%{name}
@@ -92,6 +87,8 @@ getent group mpd >/dev/null || groupadd -r mpd
 getent passwd mpd >/dev/null || \
 useradd -r -g mpd -d %{_localstatedir}/lib/%{name} -s /sbin/nologin \
 	-c "Music Player Daemon" mpd
+# fix for pulseaudio playback (#230)
+usermod -aG pulse-rt mpd
 exit 0
 
 
@@ -122,7 +119,7 @@ fi
 
 %files
 %defattr(-,root,root)
-%doc README UPGRADING doc/COMMANDS AUTHORS COPYING ChangeLog
+%doc README UPGRADING AUTHORS COPYING
 %{_bindir}/%name
 %attr(755,root,root) %{_initrddir}/%{name}
 %{_mandir}/man1/*
@@ -139,6 +136,11 @@ fi
 %ghost %{_localstatedir}/lib/%{name}/mpdstate
 
 %changelog
+* Sat Dec 27 2008 Adrian Reber <adrian@lisas.de> - 0.14-2
+- updated to 0.14 (#229, #280)
+- add mpd user to group pulse-rt (#230)
+- added BR lame-devel, wavpack-devel, ffmpeg-devel
+
 * Sun Sep 28 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info - 0.13.2-2
 - rebuild
 
