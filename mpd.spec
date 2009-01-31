@@ -138,7 +138,7 @@ fi
 
 %changelog
 * Sat Jan 31 2009 Adrian Reber <adrian@lisas.de> - 0.14-4
-- added BR libcurl-devel
+- added BR libcurl-devel (#326)
 
 * Sat Dec 27 2008 Adrian Reber <adrian@lisas.de> - 0.14-3
 - updated to 0.14 (#229, #280)
