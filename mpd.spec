@@ -1,6 +1,6 @@
 Name:           mpd
 Version:        0.14
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -31,6 +31,7 @@ BuildRequires:  libmad-devel
 BuildRequires:  lame-devel
 BuildRequires:  ffmpeg-devel
 BuildRequires:  wavpack-devel
+BuildRequires:  libcurl-devel
 Requires(pre):  shadow-utils
 Requires(post): chkconfig
 Requires(preun): chkconfig /sbin/service
@@ -136,6 +137,9 @@ fi
 %ghost %{_localstatedir}/lib/%{name}/mpdstate
 
 %changelog
+* Sat Jan 31 2009 Adrian Reber <adrian@lisas.de> - 0.14-4
+- added BR libcurl-devel (#326)
+
 * Sat Dec 27 2008 Adrian Reber <adrian@lisas.de> - 0.14-3
 - updated to 0.14 (#229, #280)
 - add mpd user to group pulse-rt (#230)
