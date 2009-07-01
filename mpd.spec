@@ -1,11 +1,11 @@
 Name:           mpd
-Version:        0.14.2
-Release:        2%{?dist}
+Version:        0.15
+Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://mpd.wikia.com/
-Source:         http://downloads.sourceforge.net/musicpd/mpd-0.14.2.tar.bz2
+Source:         http://downloads.sourceforge.net/musicpd/mpd-0.15.tar.bz2
 Source1:        mpd.init
 Source2:        95-grant-audio-devices-to-mpd.fdi
 
@@ -24,7 +24,7 @@ BuildRequires:  libshout-devel
 BuildRequires:  libmpcdec-devel
 BuildRequires:  pulseaudio-lib-devel
 BuildRequires:  libsamplerate-devel
-BuildRequires:  avahi-devel
+BuildRequires:  avahi-glib-devel
 BuildRequires:  jack-audio-connection-kit-devel
 BuildRequires:  faad2-devel
 BuildRequires:  libmad-devel
@@ -32,10 +32,18 @@ BuildRequires:  lame-devel
 BuildRequires:  ffmpeg-devel
 BuildRequires:  wavpack-devel
 BuildRequires:  libcurl-devel
+BuildRequires:  libmms-devel
+BuildRequires:  libmodplug-devel
+BuildRequires:  libsidplay-devel
+BuildRequires:  bzip2-devel
+BuildRequires:  zziplib-devel
+BuildRequires:  sqlite-devel
 Requires(pre):  shadow-utils
 Requires(post): chkconfig
 Requires(preun): chkconfig /sbin/service
 Requires(postun): /sbin/service
+
+Conflicts: mpich2
 
 %description
 Music Player Daemon (MPD) allows remote access for playing music (MP3, Ogg
@@ -48,7 +56,7 @@ especially if your a console junkie, like frontend options, or restart X often.
 %setup -q
 
 %build
-%configure --enable-mod 
+%configure --enable-mikmod --enable-bzip2 --enable-zip
 make %{?_smp_mflags}
 
 %install
@@ -73,7 +81,11 @@ install -p -m644 doc/mpdconf.example $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
 %{__sed} -i -e "s,~/.mpd/database,%{_localstatedir}/lib/%{name}/mpd.db,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
 %{__sed} -i -e "s,~/.mpd/state,%{_localstatedir}/lib/%{name}/mpdstate,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
 %{__sed} -i -e "s,#state_file,state_file,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
-%{__sed} -i -e 's,#user                            "nobody",user "mpd",g' $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
+%{__sed} -i -e "s,#music_directory,music_directory,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
+%{__sed} -i -e "s,#playlist_directory,playlist_directory,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
+%{__sed} -i -e "s,#db_file,db_file,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
+%{__sed} -i -e "s,#log_file,log_file,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
+%{__sed} -i -e 's,#user.*"nobody",user "mpd",g' $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
 %{__sed} -e "s,@bindir@,%{_bindir},g;s,@var@,%{_localstatedir},g" %{SOURCE1} > $RPM_BUILD_ROOT%{_initrddir}/%{name}
 install -p -m644 %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/hal/fdi/policy/20thirdparty
 
@@ -137,6 +149,14 @@ fi
 %ghost %{_localstatedir}/lib/%{name}/mpdstate
 
 %changelog
+* Mon Jun 29 2009 Adrian Reber <adrian@lisas.de> - 0.15-1
+- updated to 0.15
+- added "Conflicts: mpich2" (#593)
+- added BR libmms-devel, libmodplug-devel, libsidplay-devel, bzip2-devel
+           zziplib-devel, sqlite-devel
+- changed BR avahi-devel to avahi-glib-devel
+- adapted config file fixups to newest config file layout
+
 * Sun Mar 29 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 0.14.2-2
 - rebuild for new F11 features
 
