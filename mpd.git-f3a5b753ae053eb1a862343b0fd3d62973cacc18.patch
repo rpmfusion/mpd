@@ -1,0 +1,246 @@
+From f3a5b753ae053eb1a862343b0fd3d62973cacc18 Mon Sep 17 00:00:00 2001
+From: David Woodhouse <David.Woodhouse@intel.com>
+Date: Sun, 19 Jul 2009 16:42:19 +0100
+Subject: [PATCH] Add reverse_endian field to struct audio_format and handle conversion
+
+---
+ Makefile.am                        |    2 +
+ src/audio_format.h                 |    5 ++-
+ src/filter/convert_filter_plugin.c |    1 +
+ src/output_thread.c                |   10 +++--
+ src/pcm_byteswap.c                 |   71 ++++++++++++++++++++++++++++++++++++
+ src/pcm_byteswap.h                 |   50 +++++++++++++++++++++++++
+ src/pcm_convert.c                  |   18 +++++++++
+ 7 files changed, 152 insertions(+), 5 deletions(-)
+ create mode 100644 src/pcm_byteswap.c
+ create mode 100644 src/pcm_byteswap.h
+
+diff --git a/Makefile.am b/Makefile.am
+index 5c53ca5..e53dfb1 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -114,6 +114,7 @@ mpd_headers = \
+ 	src/pcm_convert.h \
+ 	src/pcm_volume.h \
+ 	src/pcm_mix.h \
++	src/pcm_byteswap.h \
+ 	src/pcm_channels.h \
+ 	src/pcm_format.h \
+ 	src/pcm_resample.h \
+@@ -218,6 +219,7 @@ src_mpd_SOURCES = \
+ 	src/pcm_convert.c \
+ 	src/pcm_volume.c \
+ 	src/pcm_mix.c \
++	src/pcm_byteswap.c \
+ 	src/pcm_channels.c \
+ 	src/pcm_format.c \
+ 	src/pcm_resample.c \
+diff --git a/src/audio_format.h b/src/audio_format.h
+index e325c1b..54514ff 100644
+--- a/src/audio_format.h
++++ b/src/audio_format.h
+@@ -27,6 +27,7 @@ struct audio_format {
+ 	uint32_t sample_rate;
+ 	uint8_t bits;
+ 	uint8_t channels;
++	uint8_t reverse_endian;
+ };
+ 
+ static inline void audio_format_clear(struct audio_format *af)
+@@ -34,6 +35,7 @@ static inline void audio_format_clear(struct audio_format *af)
+ 	af->sample_rate = 0;
+ 	af->bits = 0;
+ 	af->channels = 0;
++	af->reverse_endian = 0;
+ }
+ 
+ static inline void audio_format_init(struct audio_format *af,
+@@ -97,7 +99,8 @@ static inline bool audio_format_equals(const struct audio_format *a,
+ {
+ 	return a->sample_rate == b->sample_rate &&
+ 		a->bits == b->bits &&
+-		a->channels == b->channels;
++		a->channels == b->channels &&
++		a->reverse_endian == b->reverse_endian;
+ }
+ 
+ /**
+diff --git a/src/pcm_byteswap.c b/src/pcm_byteswap.c
+new file mode 100644
+index 0000000..6bdec1f
+--- /dev/null
++++ b/src/pcm_byteswap.c
+@@ -0,0 +1,71 @@
++/*
++ * Copyright (C) 2003-2009 The Music Player Daemon Project
++ * http://www.musicpd.org
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++#include "pcm_byteswap.h"
++#include "pcm_buffer.h"
++
++#include <glib.h>
++
++#include <assert.h>
++
++#undef G_LOG_DOMAIN
++#define G_LOG_DOMAIN "pcm"
++
++static inline uint16_t swab16(uint16_t x)
++{
++	return (x << 8) | (x >> 8);
++}
++
++const int16_t *pcm_byteswap_16(struct pcm_buffer *buffer,
++			       const int16_t *src, size_t len)
++{
++	unsigned i;
++	int16_t *buf = pcm_buffer_get(buffer, len);
++
++	if (!buf)
++		return NULL;
++
++	for (i = 0; i < len / 2; i++)
++		buf[i] = swab16(src[i]);
++
++	return buf;
++}
++
++static inline uint32_t swab32(uint32_t x)
++{
++	return (x << 24) | 
++		((x & 0xff00) << 8) |
++		((x & 0xff0000) >> 8) |
++		(x >> 24);
++}
++
++const int32_t *pcm_byteswap_32(struct pcm_buffer *buffer,
++			       const int32_t *src, size_t len)
++{
++	unsigned i;
++	int32_t *buf = pcm_buffer_get(buffer, len);
++
++	if (!buf)
++		return NULL;
++
++	for (i = 0; i < len / 4; i++)
++		buf[i] = swab32(src[i]);
++
++	return buf;
++}
+diff --git a/src/pcm_byteswap.h b/src/pcm_byteswap.h
+new file mode 100644
+index 0000000..e1196d9
+--- /dev/null
++++ b/src/pcm_byteswap.h
+@@ -0,0 +1,50 @@
++/*
++ * Copyright (C) 2003-2009 The Music Player Daemon Project
++ * http://www.musicpd.org
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++#ifndef MPD_PCM_BYTESWAP_H
++#define MPD_PCM_BYTESWAP_H
++
++#include <stdint.h>
++#include <stddef.h>
++
++struct pcm_buffer;
++
++/**
++ * Changes the endianness of 16 bit PCM data.
++ *
++ * @param buffer the destination pcm_buffer object
++ * @param src the source PCM buffer
++ * @param src_size the number of bytes in #src
++ * @return the destination buffer
++ */
++const int16_t *pcm_byteswap_16(struct pcm_buffer *buffer,
++			       const int16_t *src, size_t len);
++
++/**
++ * Changes the endianness of 32-bit (or 24-bit) PCM data.
++ *
++ * @param buffer the destination pcm_buffer object
++ * @param src the source PCM buffer
++ * @param src_size the number of bytes in #src
++ * @return the destination buffer
++ */
++const int32_t *pcm_byteswap_32(struct pcm_buffer *buffer,
++			       const int32_t *src, size_t len);
++
++#endif
+diff --git a/src/pcm_convert.c b/src/pcm_convert.c
+index ebb4adf..a96c338 100644
+--- a/src/pcm_convert.c
++++ b/src/pcm_convert.c
+@@ -83,6 +83,12 @@ pcm_convert_16(struct pcm_convert_state *state,
+ 				      dest_format->sample_rate,
+ 				      &len);
+ 
++	if (dest_format->reverse_endian) {
++		buf = pcm_byteswap_16(&state->format_buffer, buf, len);
++		if (!buf)
++			g_error("pcm_byteswap_16() failed");
++	}
++
+ 	*dest_size_r = len;
+ 	return buf;
+ }
+@@ -120,6 +126,12 @@ pcm_convert_24(struct pcm_convert_state *state,
+ 				      dest_format->sample_rate,
+ 				      &len);
+ 
++	if (dest_format->reverse_endian) {
++		buf = pcm_byteswap_32(&state->format_buffer, buf, len);
++		if (!buf)
++			g_error("pcm_byteswap_32() failed");
++	}
++
+ 	*dest_size_r = len;
+ 	return buf;
+ }
+@@ -157,6 +169,12 @@ pcm_convert_32(struct pcm_convert_state *state,
+ 				      dest_format->sample_rate,
+ 				      &len);
+ 
++	if (dest_format->reverse_endian) {
++		buf = pcm_byteswap_32(&state->format_buffer, buf, len);
++		if (!buf)
++			g_error("pcm_byteswap_32() failed");
++	}
++
+ 	*dest_size_r = len;
+ 	return buf;
+ }
+-- 
+1.6.2.5
+

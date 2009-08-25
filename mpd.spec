@@ -1,13 +1,17 @@
 Name:           mpd
-Version:        0.15
+Version:        0.15.2
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://mpd.wikia.com/
-Source:         http://downloads.sourceforge.net/musicpd/mpd-0.15.tar.bz2
+Source:         http://downloads.sourceforge.net/musicpd/mpd-0.15.2.tar.bz2
 Source1:        mpd.init
 Source2:        95-grant-audio-devices-to-mpd.fdi
+Patch0:         mpd.git-9e9d7b73d2165f197eeec12ee953add5f49746b7.patch
+Patch1:         mpd.git-f3a5b753ae053eb1a862343b0fd3d62973cacc18.patch
+Patch2:         mpd.git-00503c9251141b427457c17a9677444bf29c3992.patch
+Patch3:         6a071efa2794806ad5a2a62f0fcdee4b1843b41f.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -38,6 +42,7 @@ BuildRequires:  libsidplay-devel
 BuildRequires:  bzip2-devel
 BuildRequires:  zziplib-devel
 BuildRequires:  sqlite-devel
+BuildRequires:  autoconf
 Requires(pre):  shadow-utils
 Requires(post): chkconfig
 Requires(preun): chkconfig /sbin/service
@@ -50,10 +55,15 @@ Music Player Daemon (MPD) allows remote access for playing music (MP3, Ogg
 Vorbis, FLAC, Mod, AAC and wave files) and managing playlists. MPD is designed
 for integrating a computer into a stereo system that provides control for music
 playback over a local network. It is also makes a great desktop music player,
-especially if your a console junkie, like frontend options, or restart X often.
+especially if you are a console junkie, like frontend options or restart X often.
 
 %prep
 %setup -q
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+autoreconf --force --install
 
 %build
 %configure --enable-mikmod --enable-bzip2 --enable-zip
@@ -149,6 +159,12 @@ fi
 %ghost %{_localstatedir}/lib/%{name}/mpdstate
 
 %changelog
+* Tue Aug 25 2009 Adrian Reber <adrian@lisas.de> - 0.15.2
+- updated to 0.15.2
+- applied patches from David Woodhouse to fix
+  "mpd fails to play to usb audio device" (#731)
+- fix description (#765)
+
 * Mon Jun 29 2009 Adrian Reber <adrian@lisas.de> - 0.15-1
 - updated to 0.15
 - added "Conflicts: mpich2" (#593)

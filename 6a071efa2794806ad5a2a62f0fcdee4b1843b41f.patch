@@ -1,0 +1,22 @@
+From 6a071efa2794806ad5a2a62f0fcdee4b1843b41f Mon Sep 17 00:00:00 2001
+From: Max Kellermann<max@duempel.org>
+Date: Wed, 22  Jul  2009  13:56:36  +0000
+Subject: audio_format: initialize reverse_endian in audio_format_init()
+
+This line was missing in the reverse_endian patch, and led to
+undefined values and crashes in that attribute.
+---
+diff --git a/src/audio_format.h b/src/audio_format.h
+index 54514ff..6373d1e 100644
+--- a/src/audio_format.h
++++ b/src/audio_format.h
+@@ -45,6 +45,7 @@ static inline void audio_format_init(struct audio_format *af,
+ 	af->sample_rate = sample_rate;
+ 	af->bits = bits;
+ 	af->channels = channels;
++	af->reverse_endian = 0;
+ }
+ 
+ static inline bool audio_format_defined(const struct audio_format *af)
+--
+cgit v0.8.1-8-g7b5c
