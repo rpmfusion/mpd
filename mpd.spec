@@ -1,6 +1,6 @@
 Name:           mpd
 Version:        0.15.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -159,6 +159,9 @@ fi
 %ghost %{_localstatedir}/lib/%{name}/mpdstate
 
 %changelog
+* Wed Oct 21 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 0.15.2-2
+- rebuild for new ffmpeg
+
 * Tue Aug 25 2009 Adrian Reber <adrian@lisas.de> - 0.15.2
 - updated to 0.15.2
 - applied patches from David Woodhouse to fix
