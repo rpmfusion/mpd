@@ -1,11 +1,11 @@
 Name:           mpd
-Version:        0.15.2
-Release:        2%{?dist}
+Version:        0.15.5
+Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://mpd.wikia.com/
-Source:         http://downloads.sourceforge.net/musicpd/mpd-0.15.2.tar.bz2
+Source:         http://downloads.sourceforge.net/musicpd/mpd-0.15.5.tar.bz2
 Source1:        mpd.init
 Source2:        95-grant-audio-devices-to-mpd.fdi
 Patch0:         mpd.git-9e9d7b73d2165f197eeec12ee953add5f49746b7.patch
@@ -159,10 +159,13 @@ fi
 %ghost %{_localstatedir}/lib/%{name}/mpdstate
 
 %changelog
+* Mon Nov 09 2009 Adrian Reber <adrian@lisas.de> - 0.15.5-1
+- updated to 0.15.5 (#929)
+
 * Wed Oct 21 2009 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info> - 0.15.2-2
 - rebuild for new ffmpeg
 
-* Tue Aug 25 2009 Adrian Reber <adrian@lisas.de> - 0.15.2
+* Tue Aug 25 2009 Adrian Reber <adrian@lisas.de> - 0.15.2-1
 - updated to 0.15.2
 - applied patches from David Woodhouse to fix
   "mpd fails to play to usb audio device" (#731)
