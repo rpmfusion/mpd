@@ -1,11 +1,11 @@
 Name:           mpd
-Version:        0.15.5
+Version:        0.15.6
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://mpd.wikia.com/
-Source:         http://downloads.sourceforge.net/musicpd/mpd-0.15.5.tar.bz2
+Source:         http://downloads.sourceforge.net/musicpd/mpd-0.15.6.tar.bz2
 Source1:        mpd.init
 Source2:        95-grant-audio-devices-to-mpd.fdi
 Patch0:         mpd.git-9e9d7b73d2165f197eeec12ee953add5f49746b7.patch
@@ -43,6 +43,7 @@ BuildRequires:  bzip2-devel
 BuildRequires:  zziplib-devel
 BuildRequires:  sqlite-devel
 BuildRequires:  autoconf
+BuildRequires:  libcue-devel
 Requires(pre):  shadow-utils
 Requires(post): chkconfig
 Requires(preun): chkconfig /sbin/service
@@ -55,7 +56,7 @@ Music Player Daemon (MPD) allows remote access for playing music (MP3, Ogg
 Vorbis, FLAC, Mod, AAC and wave files) and managing playlists. MPD is designed
 for integrating a computer into a stereo system that provides control for music
 playback over a local network. It is also makes a great desktop music player,
-especially if you are a console junkie, like frontend options or restart X often.
+especially if you are a console junkie, like frontend options or restart X often
 
 %prep
 %setup -q
@@ -159,6 +160,10 @@ fi
 %ghost %{_localstatedir}/lib/%{name}/mpdstate
 
 %changelog
+* Wed Dec 02 2009 Adrian Reber <adrian@lisas.de> - 0.15.6-1
+- updated to 0.15.6 (#989)
+- added BR libcue-devel (#930)
+
 * Mon Nov 09 2009 Adrian Reber <adrian@lisas.de> - 0.15.5-1
 - updated to 0.15.5 (#929)
 
