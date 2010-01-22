@@ -1,3 +1,5 @@
+%define _default_patch_fuzz 2
+
 Name:           mpd
 Version:        0.15.8
 Release:        1%{?dist}
