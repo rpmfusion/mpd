@@ -1,13 +1,13 @@
 %define _default_patch_fuzz 2
 
 Name:           mpd
-Version:        0.15.8
+Version:        0.15.11
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://mpd.wikia.com/
-Source:         http://downloads.sourceforge.net/musicpd/mpd-0.15.8.tar.bz2
+Source:         http://downloads.sourceforge.net/musicpd/mpd-0.15.11.tar.bz2
 Source1:        mpd.init
 Source2:        95-grant-audio-devices-to-mpd.fdi
 Patch0:         mpd.git-9e9d7b73d2165f197eeec12ee953add5f49746b7.patch
@@ -162,6 +162,9 @@ fi
 %ghost %{_localstatedir}/lib/%{name}/mpdstate
 
 %changelog
+* Tue Jul 20 2010 Adrian Reber <adrian@lisas.de> - 0.15.11-1
+- updated to 0.15.11 (#1301)
+
 * Fri Jan 22 2010 Adrian Reber <adrian@lisas.de> - 0.15.8-1
 - updated to 0.15.8 (#1042)
 
