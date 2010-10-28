@@ -1,13 +1,13 @@
 %define _default_patch_fuzz 2
 
 Name:           mpd
-Version:        0.15.12
+Version:        0.15.13
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://mpd.wikia.com/
-Source:         http://downloads.sourceforge.net/musicpd/mpd-0.15.12.tar.bz2
+Source:         http://downloads.sourceforge.net/musicpd/mpd-0.15.13.tar.bz2
 Source1:        mpd.init
 Source2:        95-grant-audio-devices-to-mpd.fdi
 Patch0:         mpd.git-9e9d7b73d2165f197eeec12ee953add5f49746b7.patch
@@ -115,6 +115,7 @@ useradd -r -g mpd -d %{_localstatedir}/lib/%{name} -s /sbin/nologin \
 	-c "Music Player Daemon" mpd
 # fix for pulseaudio playback (#230)
 usermod -aG pulse-rt mpd
+usermod -aG audio mpd
 exit 0
 
 
@@ -162,6 +163,10 @@ fi
 %ghost %{_localstatedir}/lib/%{name}/mpdstate
 
 %changelog
+* Thu Oct 28 2010 Adrian Reber <adrian@lisas.de> - 0.15.13-1
+- updated to 0.15.13
+- added mpd user to audio group (#1461)
+
 * Wed Sep 29 2010 Adrian Reber <adrian@lisas.de> - 0.15.12-1
 - updated to 0.15.12
 
