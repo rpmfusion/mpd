@@ -2,7 +2,7 @@
 
 Name:           mpd
 Version:        0.15.13
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -163,6 +163,9 @@ fi
 %ghost %{_localstatedir}/lib/%{name}/mpdstate
 
 %changelog
+* Mon Sep 26 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.15.13-2
+- Rebuilt for FFmpeg-0.8
+
 * Thu Oct 28 2010 Adrian Reber <adrian@lisas.de> - 0.15.13-1
 - updated to 0.15.13
 - added mpd user to audio group (#1461)
