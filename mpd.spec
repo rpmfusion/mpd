@@ -1,19 +1,19 @@
 %define _default_patch_fuzz 2
 
 Name:           mpd
-Version:        0.15.13
-Release:        2%{?dist}
+Version:        0.16.5
+Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://mpd.wikia.com/
-Source:         http://downloads.sourceforge.net/musicpd/mpd-0.15.13.tar.bz2
+Source:         http://downloads.sourceforge.net/musicpd/mpd-0.16.5.tar.gz
 Source1:        mpd.init
 Source2:        95-grant-audio-devices-to-mpd.fdi
-Patch0:         mpd.git-9e9d7b73d2165f197eeec12ee953add5f49746b7.patch
-Patch1:         mpd.git-f3a5b753ae053eb1a862343b0fd3d62973cacc18.patch
-Patch2:         mpd.git-00503c9251141b427457c17a9677444bf29c3992.patch
-Patch3:         6a071efa2794806ad5a2a62f0fcdee4b1843b41f.patch
+#Patch0:         mpd.git-9e9d7b73d2165f197eeec12ee953add5f49746b7.patch
+#Patch1:         mpd.git-f3a5b753ae053eb1a862343b0fd3d62973cacc18.patch
+#Patch2:         mpd.git-00503c9251141b427457c17a9677444bf29c3992.patch
+#Patch3:         6a071efa2794806ad5a2a62f0fcdee4b1843b41f.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -62,11 +62,11 @@ especially if you are a console junkie, like frontend options or restart X often
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-autoreconf --force --install
+#%patch0 -p1
+#%patch1 -p1
+#%patch2 -p1
+#%patch3 -p1
+#autoreconf --force --install
 
 %build
 %configure --enable-mikmod --enable-bzip2 --enable-zip
@@ -163,6 +163,9 @@ fi
 %ghost %{_localstatedir}/lib/%{name}/mpdstate
 
 %changelog
+* Wed Oct 12 2011 Ankur Sinha <ankursinha AT fedoraproject DOT org> - 0.16.5-1
+- Update to latest upstream release (#1954)
+
 * Mon Sep 26 2011 Nicolas Chauvet <kwizart@gmail.com> - 0.15.13-2
 - Rebuilt for FFmpeg-0.8
 
