@@ -1,170 +1,178 @@
-%define _default_patch_fuzz 2
+%global  mpd_user            mpd
+%global  mpd_group           %{mpd_user}
+
+%global  mpd_homedir         %{_localstatedir}/lib/mpd
+%global  mpd_logdir          %{_localstatedir}/log/mpd
+%global  mpd_musicdir        %{mpd_homedir}/music
+%global  mpd_playlistsdir    %{mpd_homedir}/playlists
+
+%global  mpd_configfile      %{_sysconfdir}/mpd.conf
+%global  mpd_dbfile          %{mpd_homedir}/mpd.db
+%global  mpd_logfile         %{mpd_logdir}/mpd.log
+%global  mpd_statefile       %{mpd_homedir}/mpdstate
 
 Name:           mpd
-Version:        0.16.5
+Epoch:          1
+Version:        0.16.7
 Release:        2%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://mpd.wikia.com/
-Source:         http://downloads.sourceforge.net/musicpd/mpd-0.16.5.tar.gz
-Source1:        mpd.init
-Source2:        95-grant-audio-devices-to-mpd.fdi
-#Patch0:         mpd.git-9e9d7b73d2165f197eeec12ee953add5f49746b7.patch
-#Patch1:         mpd.git-f3a5b753ae053eb1a862343b0fd3d62973cacc18.patch
-#Patch2:         mpd.git-00503c9251141b427457c17a9677444bf29c3992.patch
-#Patch3:         6a071efa2794806ad5a2a62f0fcdee4b1843b41f.patch
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Source0:        http://downloads.sourceforge.net/musicpd/%{name}-%{version}.tar.bz2
+Patch0:         mpd-0.16.7-default-pulseaudio.patch
 
-BuildRequires:  libao-devel
-BuildRequires:  libogg-devel
-BuildRequires:  libvorbis-devel
-BuildRequires:  flac-devel
-BuildRequires:  audiofile-devel
-BuildRequires:  libid3tag-devel
-BuildRequires:  mikmod-devel
-BuildRequires:  alsa-lib-devel
-BuildRequires:  zlib-devel
-BuildRequires:  libshout-devel 
-BuildRequires:  libmpcdec-devel
-BuildRequires:  pulseaudio-lib-devel
-BuildRequires:  libsamplerate-devel
-BuildRequires:  avahi-glib-devel
-BuildRequires:  jack-audio-connection-kit-devel
-BuildRequires:  faad2-devel
-BuildRequires:  libmad-devel
-BuildRequires:  lame-devel
-BuildRequires:  ffmpeg-devel
-BuildRequires:  wavpack-devel
-BuildRequires:  libcurl-devel
-BuildRequires:  libmms-devel
-BuildRequires:  libmodplug-devel
-BuildRequires:  libsidplay-devel
-BuildRequires:  bzip2-devel
-BuildRequires:  zziplib-devel
-BuildRequires:  sqlite-devel
-BuildRequires:  autoconf
-BuildRequires:  libcue-devel
-Requires(pre):  shadow-utils
-Requires(post): chkconfig
-Requires(preun): chkconfig /sbin/service
-Requires(postun): /sbin/service
-
-Conflicts: mpich2
+BuildRequires:     alsa-lib-devel
+BuildRequires:     audiofile-devel
+BuildRequires:     autoconf
+BuildRequires:     avahi-glib-devel
+BuildRequires:     bzip2-devel
+BuildRequires:     faad2-devel
+BuildRequires:     ffmpeg-devel
+BuildRequires:     flac-devel
+BuildRequires:     jack-audio-connection-kit-devel
+BuildRequires:     lame-devel
+BuildRequires:     libao-devel
+BuildRequires:     libcue-devel
+BuildRequires:     libcurl-devel
+BuildRequires:     libid3tag-devel
+BuildRequires:     libmad-devel
+BuildRequires:     libmms-devel
+BuildRequires:     libmodplug-devel
+BuildRequires:     libmpcdec-devel
+BuildRequires:     libogg-devel
+BuildRequires:     libsamplerate-devel
+BuildRequires:     libshout-devel 
+BuildRequires:     libsidplay-devel
+BuildRequires:     libvorbis-devel
+BuildRequires:     mikmod-devel
+BuildRequires:     pulseaudio-lib-devel
+BuildRequires:     sqlite-devel
+BuildRequires:     wavpack-devel
+BuildRequires:     zlib-devel
+BuildRequires:     zziplib-devel
+BuildRequires:     systemd-units
+Requires(pre):     shadow-utils
+Requires(post):    chkconfig, systemd-units
+Requires(preun):   chkconfig, initscripts, systemd-units
+Requires(postun):  initscripts, systemd-units
+Conflicts:         mpich2
 
 %description
-Music Player Daemon (MPD) allows remote access for playing music (MP3, Ogg
-Vorbis, FLAC, Mod, AAC and wave files) and managing playlists. MPD is designed
-for integrating a computer into a stereo system that provides control for music
-playback over a local network. It is also makes a great desktop music player,
-especially if you are a console junkie, like frontend options or restart X often
+Music Player Daemon (MPD) is a flexible, powerful, server-side application for
+playing music. Through plugins and libraries it can play a variety of sound
+files (e.g., OGG, MP3, FLAC, AAC, WAV) and can be controlled remotely via its
+network protocol. It can be used as a desktop music player, but is also great
+for streaming music to a stereo system over a local network. There are many
+GUI and command-line applications to choose from that act as a front-end for
+browsing and playing your MPD music collection.
+
 
 %prep
 %setup -q
-#%patch0 -p1
-#%patch1 -p1
-#%patch2 -p1
-#%patch3 -p1
-#autoreconf --force --install
+%patch0 -p0
 
 %build
-%configure --enable-mikmod --enable-bzip2 --enable-zip
+%{configure} --with-systemdsystemunitdir=%{_unitdir} \
+    --enable-bzip2 --enable-mikmod --enable-zzip
 make %{?_smp_mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
-# conf file
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}
-mkdir -p $RPM_BUILD_ROOT%{_initrddir}
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/%{name}/playlists
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/%{name}/music
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/hal/fdi/policy/20thirdparty
-touch $RPM_BUILD_ROOT%{_localstatedir}/lib/%{name}/mpd.log
-touch $RPM_BUILD_ROOT%{_localstatedir}/lib/%{name}/mpd.error
-touch $RPM_BUILD_ROOT%{_localstatedir}/lib/%{name}/mpd.db
-touch $RPM_BUILD_ROOT%{_localstatedir}/lib/%{name}/mpdstate
-install -p -m644 doc/mpdconf.example $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
-%{__sed} -i -e "s,~/music,%{_localstatedir}/lib/%{name}/music,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
-%{__sed} -i -e "s,~/.mpd/playlists,%{_localstatedir}/lib/%{name}/playlists,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
-%{__sed} -i -e "s,~/.mpd/log,%{_localstatedir}/lib/%{name}/mpd.log,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
-%{__sed} -i -e "s,~/.mpd/error-log,%{_localstatedir}/lib/%{name}/mpd.error,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
-%{__sed} -i -e "s,~/.mpd/database,%{_localstatedir}/lib/%{name}/mpd.db,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
-%{__sed} -i -e "s,~/.mpd/state,%{_localstatedir}/lib/%{name}/mpdstate,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
-%{__sed} -i -e "s,#state_file,state_file,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
-%{__sed} -i -e "s,#music_directory,music_directory,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
-%{__sed} -i -e "s,#playlist_directory,playlist_directory,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
-%{__sed} -i -e "s,#db_file,db_file,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
-%{__sed} -i -e "s,#log_file,log_file,g" $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
-%{__sed} -i -e 's,#user.*"nobody",user "mpd",g' $RPM_BUILD_ROOT%{_sysconfdir}/mpd.conf
-%{__sed} -e "s,@bindir@,%{_bindir},g;s,@var@,%{_localstatedir},g" %{SOURCE1} > $RPM_BUILD_ROOT%{_initrddir}/%{name}
-install -p -m644 %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/hal/fdi/policy/20thirdparty
+mkdir -p $RPM_BUILD_ROOT%{mpd_homedir}
+mkdir -p $RPM_BUILD_ROOT%{mpd_logdir}
+mkdir -p $RPM_BUILD_ROOT%{mpd_musicdir}
+mkdir -p $RPM_BUILD_ROOT%{mpd_playlistsdir}
+touch $RPM_BUILD_ROOT%{mpd_dbfile}
+touch $RPM_BUILD_ROOT%{mpd_logfile}
+touch $RPM_BUILD_ROOT%{mpd_statefile}
 
-rm -rf $RPM_BUILD_ROOT/%{_docdir}/%{name}/
+install -D -p -m644 doc/mpdconf.example $RPM_BUILD_ROOT%{mpd_configfile}
+sed -i -e "s|#music_directory.*$|music_directory \"%{mpd_musicdir}\"|g" \
+       -e "s|#playlist_directory.*$|playlist_directory \"%{mpd_playlistsdir}\"|g" \
+       -e "s|#db_file.*$|db_file \"%{mpd_dbfile}\"|g" \
+       -e "s|#log_file.*$|log_file \"%{mpd_logfile}\"|g" \
+       -e "s|#state_file.*$|state_file \"%{mpd_statefile}\"|g" \
+       -e 's|#user.*$|user "mpd"|g' \
+       $RPM_BUILD_ROOT%{mpd_configfile}
 
-%clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT%{_docdir}/%{name}/
+
 
 %pre
-#creating mpd user
-getent group mpd >/dev/null || groupadd -r mpd
-getent passwd mpd >/dev/null || \
-useradd -r -g mpd -d %{_localstatedir}/lib/%{name} -s /sbin/nologin \
-	-c "Music Player Daemon" mpd
-# fix for pulseaudio playback (#230)
-usermod -aG pulse-rt mpd
-usermod -aG audio mpd
-exit 0
-
-
-%post
-if [ "$1" -eq "1" ]; then
-        #register %{name} service
-        /sbin/chkconfig --add %{name}
-else
-	# as we switched from running as root.root to mpd.mpd
-	# chown the db files and playlists on upgrades
-	chown -R mpd.mpd %{_localstatedir}/lib/%{name}/playlists > /dev/null 2>&1 ||:
-	chown mpd.mpd %{_localstatedir}/lib/%{name}/mpd.log > /dev/null 2>&1 ||:
-	chown mpd.mpd %{_localstatedir}/lib/%{name}/mpd.error > /dev/null 2>&1 ||:
-	chown mpd.mpd %{_localstatedir}/lib/%{name}/mpd.db > /dev/null 2>&1 ||:
-	chown mpd.mpd %{_localstatedir}/lib/%{name}/mpdstate > /dev/null 2>&1 ||:
+if [ $1 -eq 1 ]; then
+    getent group %{mpd_group} >/dev/null || groupadd -r %{mpd_group}
+    getent passwd %{mpd_user} >/dev/null || \
+        useradd -r -g %{mpd_group} -d %{mpd_homedir} \
+            -s /sbin/nologin -c "Music Player Daemon" %{mpd_user}
+    gpasswd -a %{mpd_group} audio || :
+    exit 0
 fi
 
+%post
+if [ $1 -eq 1 ]; then
+    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
+fi
+
+%triggerun -- mpd < 1:0.16.7-2
+if /sbin/chkconfig --level 3 mpd; then
+    /bin/systemctl enable mpd.service >/dev/null 2>&1 || :
+fi
+/sbin/chkconfig --del mpd >/dev/null 2>&1 || :
+/bin/systemctl try-restart mpd.service >/dev/null 2>&1 || :
+
 %preun
-if [ "$1" -eq "0" ]; then
-        /sbin/service %{name} stop > /dev/null 2>&1
-        /sbin/chkconfig --del %{name}
+if [ $1 -eq 0 ]; then
+    /bin/systemctl --no-reload disable mpd.service >/dev/null 2>&1 || :
+    /bin/systemctl stop mpd.service >/dev/null 2>&1 || :
 fi
 
 %postun
-if [ "$1" -eq "1" ]; then
-        /sbin/service %{name} condrestart > /dev/null 2>&1
+/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+if [ $1 -ge 1 ]; then
+    /bin/systemctl try-restart mpd.service >/dev/null 2>&1 || :
 fi
 
+
 %files
-%defattr(-,root,root)
-%doc README UPGRADING AUTHORS COPYING
-%{_bindir}/%name
-%attr(755,root,root) %{_initrddir}/%{name}
-%{_mandir}/man1/*
-%{_mandir}/man5/*
-%{_datadir}/hal/fdi/policy/20thirdparty/*fdi
-%defattr(-,mpd,mpd)
-%config(noreplace) %{_sysconfdir}/mpd.conf
-%dir %{_localstatedir}/lib/%{name}
-%{_localstatedir}/lib/%{name}/playlists
-%{_localstatedir}/lib/%{name}/music
-%ghost %{_localstatedir}/lib/%{name}/mpd.log
-%ghost %{_localstatedir}/lib/%{name}/mpd.error
-%ghost %{_localstatedir}/lib/%{name}/mpd.db
-%ghost %{_localstatedir}/lib/%{name}/mpdstate
+%doc AUTHORS COPYING README UPGRADING
+%{_bindir}/%{name}
+%{_mandir}/man1/mpd.1*
+%{_mandir}/man5/mpd.conf.5*
+%{_unitdir}/mpd.service
+%config(noreplace) %{mpd_configfile}
+
+%defattr(-,%{mpd_user},%{mpd_group})
+%dir %{mpd_homedir}
+%dir %{mpd_musicdir}
+%dir %{mpd_playlistsdir}
+%ghost %{mpd_dbfile}
+%ghost %{mpd_logfile}
+%ghost %{mpd_statefile}
+
 
 %changelog
-* Wed Jan 25 2012 Nicolas Chauvet <kwizart@gmail.com> - 0.16.5-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+* Sat Feb 25 2012 Jamie Nguyen <jamie@tomoyolinux.co.uk> - 1:0.16.7-2
+- remove obsolete BuildRoot tag, %%clean section and unnecessary macros
+- do not add mpd to pulse-rt group as system mode is not recommended by
+  pulseaudio upstream, and the group no longer exists
+- add triggerun and systemd scriptlets
+- add Epoch (for triggerun scriptlet) to allow updates to F16
+- change default audio output to pulseaudio
+
+* Sun Feb 05 2012 Jamie Nguyen <jamie@tomoyolinux.co.uk> - 0.16.7-1
+- update to 0.16.7
+
+* Sun Jan 08 2012 Jamie Nguyen <jamie@tomoyolinux.co.uk> - 0.16.6-1
+- update to 0.16.6
+- add convenient global variables
+- add systemd unit file instead of initscript
+- change incorrect --enable-zip to --enable-zzip
+- change default log file location to /var/log/mpd/mpd.log
+- remove obsolete mpd error-log
+- remove obsolete hal fdi file
 
 * Wed Oct 12 2011 Ankur Sinha <ankursinha AT fedoraproject DOT org> - 0.16.5-1
 - Update to latest upstream release (#1954)
