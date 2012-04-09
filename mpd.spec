@@ -13,8 +13,8 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.16.7
-Release:        2%{?dist}
+Version:        0.16.8
+Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -154,6 +154,9 @@ fi
 
 
 %changelog
+* Mon Apr 09 2012 Jamie Nguyen <jamie@tomoyolinux.co.uk> - 1:0.16.8-1
+- update to 0.16.8
+
 * Sat Feb 25 2012 Jamie Nguyen <jamie@tomoyolinux.co.uk> - 1:0.16.7-2
 - remove obsolete BuildRoot tag, %%clean section and unnecessary macros
 - do not add mpd to pulse-rt group as system mode is not recommended by
