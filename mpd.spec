@@ -12,7 +12,7 @@
 %global  mpd_statefile       %{mpd_homedir}/mpdstate
 
 Name:           mpd
-Version:        0.16.7
+Version:        0.16.8
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
@@ -157,6 +157,9 @@ fi
 %ghost %{mpd_statefile}
 
 %changelog
+* Mon Apr 09 2012 Jamie Nguyen <jamie@tomoyolinux.co.uk> - 0.16.8-1
+- update to 0.16.8
+
 * Sat Feb 25 2012 Jamie Nguyen <jamie@tomoyolinux.co.uk> - 0.16.7-1
 - update to upstream release 0.16.7
 - add convenient global variables
