@@ -14,7 +14,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.16.8
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -114,6 +114,13 @@ fi
 %post
 if [ $1 -eq 1 ]; then
     /bin/systemctl daemon-reload >/dev/null 2>&1 || :
+else
+    # as we switched from running as root.root to mpd.mpd
+    # chown the db files and playlists on upgrades
+    chown -R %{mpd_user}.%{mpd_group} \
+        %{mpd_homedir} > /dev/null 2>&1 ||:
+    chown -R %{mpd_user}.%{mpd_group} \
+        %{mpd_logdir} > /dev/null 2>&1 ||:
 fi
 
 %triggerun -- mpd < 1:0.16.7-2
@@ -146,6 +153,7 @@ fi
 
 %defattr(-,%{mpd_user},%{mpd_group})
 %dir %{mpd_homedir}
+%dir %{mpd_logdir}
 %dir %{mpd_musicdir}
 %dir %{mpd_playlistsdir}
 %ghost %{mpd_dbfile}
@@ -154,6 +162,10 @@ fi
 
 
 %changelog
+* Mon Apr 09 2012 Jamie Nguyen <jamie@tomoyolinux.co.uk> - 0.16.8-2
+- add missing chowns to %%post scriptlet
+- add missing %%{mpd_logdir} to %%files
+
 * Mon Apr 09 2012 Jamie Nguyen <jamie@tomoyolinux.co.uk> - 1:0.16.8-1
 - update to 0.16.8
 
