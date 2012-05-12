@@ -1,3 +1,5 @@
+%global  _hardened_build     1
+
 %global  mpd_user            mpd
 %global  mpd_group           %{mpd_user}
 
@@ -14,7 +16,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.16.8
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -44,7 +46,6 @@ BuildRequires:     libmpcdec-devel
 BuildRequires:     libogg-devel
 BuildRequires:     libsamplerate-devel
 BuildRequires:     libshout-devel 
-BuildRequires:     libsidplay-devel
 BuildRequires:     libvorbis-devel
 BuildRequires:     mikmod-devel
 BuildRequires:     pulseaudio-lib-devel
@@ -74,8 +75,12 @@ browsing and playing your MPD music collection.
 %patch0 -p0
 
 %build
-%{configure} --with-systemdsystemunitdir=%{_unitdir} \
-    --enable-bzip2 --enable-mikmod --enable-zzip
+%{configure} \
+    --with-systemdsystemunitdir=%{_unitdir} \
+    --enable-bzip2 \
+    --enable-lastfm \
+    --enable-mikmod \
+    --enable-zzip
 make %{?_smp_mflags}
 
 %install
@@ -162,6 +167,11 @@ fi
 
 
 %changelog
+* Fri May 11 2012 Jamie Nguyen <jamie@tomoyolinux.co.uk> - 0.16.8-3
+- enable lastfm support
+- enable hardened build
+- remove redundant libsidplay-devel BR, as mpd requires libsidplay2
+
 * Mon Apr 09 2012 Jamie Nguyen <jamie@tomoyolinux.co.uk> - 0.16.8-2
 - add missing chowns to %%post scriptlet
 - add missing %%{mpd_logdir} to %%files
