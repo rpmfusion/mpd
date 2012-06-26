@@ -16,7 +16,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.16.8
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -167,6 +167,9 @@ fi
 
 
 %changelog
+* Tue Jun 26 2012 Nicolas Chauvet <kwizart@gmail.com> - 1:0.16.8-4
+- Rebuilt for FFmpeg
+
 * Fri May 11 2012 Jamie Nguyen <jamie@tomoyolinux.co.uk> - 0.16.8-3
 - enable lastfm support
 - enable hardened build
