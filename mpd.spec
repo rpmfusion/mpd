@@ -48,7 +48,7 @@ BuildRequires:     libsamplerate-devel
 BuildRequires:     libshout-devel 
 BuildRequires:     libvorbis-devel
 BuildRequires:     mikmod-devel
-BuildRequires:     pulseaudio-lib-devel
+BuildRequires:     pkgconfig(libpulse)
 BuildRequires:     sqlite-devel
 BuildRequires:     wavpack-devel
 BuildRequires:     zlib-devel
@@ -169,6 +169,7 @@ fi
 %changelog
 * Tue Jun 26 2012 Nicolas Chauvet <kwizart@gmail.com> - 1:0.16.8-4
 - Rebuilt for FFmpeg
+- Switch BR to pkgconfig(libpulse)
 
 * Fri May 11 2012 Jamie Nguyen <jamie@tomoyolinux.co.uk> - 0.16.8-3
 - enable lastfm support
