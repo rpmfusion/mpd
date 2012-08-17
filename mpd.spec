@@ -16,7 +16,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.16.8
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -75,6 +75,7 @@ browsing and playing your MPD music collection.
 %patch0 -p0
 
 %build
+sed -i -e "s,sound.target,sound.target network.target,g" mpd.service.in
 %{configure} \
     --with-systemdsystemunitdir=%{_unitdir} \
     --enable-bzip2 \
@@ -167,6 +168,9 @@ fi
 
 
 %changelog
+* Fri Aug 17 2012 Adrian Reber <adrian@lisas.de> - 1:0.16.8-5
+- fix "mpd fails to bind an addres: started too early" (#2447)
+
 * Tue Jun 26 2012 Nicolas Chauvet <kwizart@gmail.com> - 1:0.16.8-4
 - Rebuilt for FFmpeg
 - Switch BR to pkgconfig(libpulse)
