@@ -16,7 +16,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.16.8
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -168,6 +168,9 @@ fi
 
 
 %changelog
+* Sat Nov 24 2012 Nicolas Chauvet <kwizart@gmail.com> - 1:0.16.8-6
+- Rebuilt for FFmpeg 1.0
+
 * Fri Aug 17 2012 Adrian Reber <adrian@lisas.de> - 1:0.16.8-5
 - fix "mpd fails to bind an addres: started too early" (#2447)
 
