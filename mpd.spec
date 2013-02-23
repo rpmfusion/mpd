@@ -16,13 +16,14 @@
 Name:           mpd
 Epoch:          1
 Version:        0.16.8
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://mpd.wikia.com/
 
 Source0:        http://downloads.sourceforge.net/musicpd/%{name}-%{version}.tar.bz2
+Source1:        mpd.logrotate
 Patch0:         mpd-0.16.7-default-pulseaudio.patch
 
 BuildRequires:     alsa-lib-devel
@@ -45,7 +46,7 @@ BuildRequires:     libmodplug-devel
 BuildRequires:     libmpcdec-devel
 BuildRequires:     libogg-devel
 BuildRequires:     libsamplerate-devel
-BuildRequires:     libshout-devel 
+BuildRequires:     libshout-devel
 BuildRequires:     libvorbis-devel
 BuildRequires:     mikmod-devel
 BuildRequires:     pkgconfig(libpulse)
@@ -86,6 +87,9 @@ make %{?_smp_mflags}
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
+
+install -p -D -m 0644 %{SOURCE1} \
+    $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/mpd
 
 mkdir -p $RPM_BUILD_ROOT%{mpd_homedir}
 mkdir -p $RPM_BUILD_ROOT%{mpd_logdir}
@@ -156,6 +160,7 @@ fi
 %{_mandir}/man5/mpd.conf.5*
 %{_unitdir}/mpd.service
 %config(noreplace) %{mpd_configfile}
+%config(noreplace) %{_sysconfdir}/logrotate.d/mpd
 
 %defattr(-,%{mpd_user},%{mpd_group})
 %dir %{mpd_homedir}
@@ -168,6 +173,9 @@ fi
 
 
 %changelog
+* Sat Feb 23 2013 Jamie Nguyen <jamielinux@fedoraproject.org> - 1:0.16.8-6
+- add a logrotate file
+
 * Fri Aug 17 2012 Adrian Reber <adrian@lisas.de> - 1:0.16.8-5
 - fix "mpd fails to bind an addres: started too early" (#2447)
 
