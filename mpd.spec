@@ -16,13 +16,14 @@
 Name:           mpd
 Epoch:          1
 Version:        0.16.8
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://mpd.wikia.com/
 
 Source0:        http://downloads.sourceforge.net/musicpd/%{name}-%{version}.tar.bz2
+Source1:        mpd.logrotate
 Patch0:         mpd-0.16.7-default-pulseaudio.patch
 
 BuildRequires:     alsa-lib-devel
@@ -45,7 +46,7 @@ BuildRequires:     libmodplug-devel
 BuildRequires:     libmpcdec-devel
 BuildRequires:     libogg-devel
 BuildRequires:     libsamplerate-devel
-BuildRequires:     libshout-devel 
+BuildRequires:     libshout-devel
 BuildRequires:     libvorbis-devel
 BuildRequires:     mikmod-devel
 BuildRequires:     pkgconfig(libpulse)
@@ -55,9 +56,9 @@ BuildRequires:     zlib-devel
 BuildRequires:     zziplib-devel
 BuildRequires:     systemd-units
 Requires(pre):     shadow-utils
-Requires(post):    chkconfig, systemd-units
-Requires(preun):   chkconfig, initscripts, systemd-units
-Requires(postun):  initscripts, systemd-units
+Requires(post):    systemd
+Requires(preun):   systemd
+Requires(postun):  systemd
 Conflicts:         mpich2
 
 %description
@@ -86,6 +87,9 @@ make %{?_smp_mflags}
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
+
+install -p -D -m 0644 %{SOURCE1} \
+    $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/mpd
 
 mkdir -p $RPM_BUILD_ROOT%{mpd_homedir}
 mkdir -p $RPM_BUILD_ROOT%{mpd_logdir}
@@ -118,35 +122,13 @@ if [ $1 -eq 1 ]; then
 fi
 
 %post
-if [ $1 -eq 1 ]; then
-    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
-else
-    # as we switched from running as root.root to mpd.mpd
-    # chown the db files and playlists on upgrades
-    chown -R %{mpd_user}.%{mpd_group} \
-        %{mpd_homedir} > /dev/null 2>&1 ||:
-    chown -R %{mpd_user}.%{mpd_group} \
-        %{mpd_logdir} > /dev/null 2>&1 ||:
-fi
-
-%triggerun -- mpd < 1:0.16.7-2
-if /sbin/chkconfig --level 3 mpd; then
-    /bin/systemctl enable mpd.service >/dev/null 2>&1 || :
-fi
-/sbin/chkconfig --del mpd >/dev/null 2>&1 || :
-/bin/systemctl try-restart mpd.service >/dev/null 2>&1 || :
+%systemd_post mpd.service
 
 %preun
-if [ $1 -eq 0 ]; then
-    /bin/systemctl --no-reload disable mpd.service >/dev/null 2>&1 || :
-    /bin/systemctl stop mpd.service >/dev/null 2>&1 || :
-fi
+%systemd_preun mpd.service
 
 %postun
-/bin/systemctl daemon-reload >/dev/null 2>&1 || :
-if [ $1 -ge 1 ]; then
-    /bin/systemctl try-restart mpd.service >/dev/null 2>&1 || :
-fi
+%systemd_postun_with_restart mpd.service
 
 
 %files
@@ -156,6 +138,7 @@ fi
 %{_mandir}/man5/mpd.conf.5*
 %{_unitdir}/mpd.service
 %config(noreplace) %{mpd_configfile}
+%config(noreplace) %{_sysconfdir}/logrotate.d/mpd
 
 %defattr(-,%{mpd_user},%{mpd_group})
 %dir %{mpd_homedir}
@@ -168,6 +151,10 @@ fi
 
 
 %changelog
+* Sat Feb 23 2013 Jamie Nguyen <jamielinux@fedoraproject.org> - 1:0.16.8-7
+- update systemd scriptlets and remove chkconfig from the Requires
+- add a logrotate file
+
 * Sat Nov 24 2012 Nicolas Chauvet <kwizart@gmail.com> - 1:0.16.8-6
 - Rebuilt for FFmpeg 1.0
 
