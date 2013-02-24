@@ -7,6 +7,7 @@
 %global  mpd_logdir          %{_localstatedir}/log/mpd
 %global  mpd_musicdir        %{mpd_homedir}/music
 %global  mpd_playlistsdir    %{mpd_homedir}/playlists
+%global  mpd_rundir          /run/mpd
 
 %global  mpd_configfile      %{_sysconfdir}/mpd.conf
 %global  mpd_dbfile          %{mpd_homedir}/mpd.db
@@ -16,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.16.8
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -24,7 +25,9 @@ URL:            http://mpd.wikia.com/
 
 Source0:        http://downloads.sourceforge.net/musicpd/%{name}-%{version}.tar.bz2
 Source1:        mpd.logrotate
+Source2:        mpd.tmpfiles.d
 Patch0:         mpd-0.16.7-default-pulseaudio.patch
+Patch1:         mpd-0.16.8-socket-location.patch
 
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
@@ -74,6 +77,7 @@ browsing and playing your MPD music collection.
 %prep
 %setup -q
 %patch0 -p0
+%patch1 -p1
 
 %build
 sed -i -e "s,sound.target,sound.target network.target,g" mpd.service.in
@@ -90,6 +94,11 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 install -p -D -m 0644 %{SOURCE1} \
     $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/mpd
+
+install -p -D -m 0644 %{SOURCE2} \
+    $RPM_BUILD_ROOT%{_prefix}/lib/tmpfiles.d/mpd.conf
+mkdir -p %{buildroot}/run
+install -d -m 0755 %{buildroot}/%{mpd_rundir}
 
 mkdir -p $RPM_BUILD_ROOT%{mpd_homedir}
 mkdir -p $RPM_BUILD_ROOT%{mpd_logdir}
@@ -139,18 +148,24 @@ fi
 %{_unitdir}/mpd.service
 %config(noreplace) %{mpd_configfile}
 %config(noreplace) %{_sysconfdir}/logrotate.d/mpd
+%{_prefix}/lib/tmpfiles.d/%{name}.conf
 
 %defattr(-,%{mpd_user},%{mpd_group})
 %dir %{mpd_homedir}
 %dir %{mpd_logdir}
 %dir %{mpd_musicdir}
 %dir %{mpd_playlistsdir}
+%dir %{mpd_rundir}
 %ghost %{mpd_dbfile}
 %ghost %{mpd_logfile}
 %ghost %{mpd_statefile}
 
 
 %changelog
+* Sun Feb 24 2013 Jamie Nguyen <jamielinux@fedoraproject.org> - 1:0.16.8-8
+- add tmpfiles.d/mpd.conf in case user wishes to use socket file
+- change default socket location in mpd.conf, but leave commented
+
 * Sat Feb 23 2013 Jamie Nguyen <jamielinux@fedoraproject.org> - 1:0.16.8-7
 - update systemd scriptlets and remove chkconfig from the Requires
 - add a logrotate file
@@ -165,19 +180,19 @@ fi
 - Rebuilt for FFmpeg
 - Switch BR to pkgconfig(libpulse)
 
-* Fri May 11 2012 Jamie Nguyen <jamie@tomoyolinux.co.uk> - 0.16.8-3
+* Fri May 11 2012 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.16.8-3
 - enable lastfm support
 - enable hardened build
 - remove redundant libsidplay-devel BR, as mpd requires libsidplay2
 
-* Mon Apr 09 2012 Jamie Nguyen <jamie@tomoyolinux.co.uk> - 0.16.8-2
+* Mon Apr 09 2012 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.16.8-2
 - add missing chowns to %%post scriptlet
 - add missing %%{mpd_logdir} to %%files
 
-* Mon Apr 09 2012 Jamie Nguyen <jamie@tomoyolinux.co.uk> - 1:0.16.8-1
+* Mon Apr 09 2012 Jamie Nguyen <jamielinux@fedoraproject.org> - 1:0.16.8-1
 - update to 0.16.8
 
-* Sat Feb 25 2012 Jamie Nguyen <jamie@tomoyolinux.co.uk> - 1:0.16.7-2
+* Sat Feb 25 2012 Jamie Nguyen <jamielinux@fedoraproject.org> - 1:0.16.7-2
 - remove obsolete BuildRoot tag, %%clean section and unnecessary macros
 - do not add mpd to pulse-rt group as system mode is not recommended by
   pulseaudio upstream, and the group no longer exists
@@ -185,10 +200,10 @@ fi
 - add Epoch (for triggerun scriptlet) to allow updates to F16
 - change default audio output to pulseaudio
 
-* Sun Feb 05 2012 Jamie Nguyen <jamie@tomoyolinux.co.uk> - 0.16.7-1
+* Sun Feb 05 2012 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.16.7-1
 - update to 0.16.7
 
-* Sun Jan 08 2012 Jamie Nguyen <jamie@tomoyolinux.co.uk> - 0.16.6-1
+* Sun Jan 08 2012 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.16.6-1
 - update to 0.16.6
 - add convenient global variables
 - add systemd unit file instead of initscript
