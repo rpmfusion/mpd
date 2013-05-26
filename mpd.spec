@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.17.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -160,6 +160,9 @@ fi
 
 
 %changelog
+* Sun May 26 2013 Nicolas Chauvet <kwizart@gmail.com> - 1:0.17.3-3
+- Rebuilt for x264/FFmpeg
+
 * Sun Feb 24 2013 Jamie Nguyen <jamielinux@fedoraproject.org> - 1:0.17.3-2
 - add tmpfiles.d/mpd.conf in case user wishes to use socket file
 - change default socket location in mpd.conf, but leave commented
