@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.17.3
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -160,6 +160,9 @@ fi
 
 
 %changelog
+* Thu Aug 15 2013 Nicolas Chauvet <kwizart@gmail.com> - 1:0.17.3-4
+- Rebuilt for FFmpeg 2.0.x
+
 * Sun May 26 2013 Nicolas Chauvet <kwizart@gmail.com> - 1:0.17.3-3
 - Rebuilt for x264/FFmpeg
 
