@@ -14,20 +14,28 @@
 %global  mpd_logfile         %{mpd_logdir}/mpd.log
 %global  mpd_statefile       %{mpd_homedir}/mpdstate
 
+%global git_commit          0e0be0243bdf2fe8cbd88bd530ec7b7040b4d9da
+%global shortcommit         %(c=%{git_commit}; echo ${c:0:7})
+
 Name:           mpd
 Epoch:          1
-Version:        0.17.3
-Release:        4%{?dist}
+Version:        0.18
+Release:        0.1.git%{shortcommit}%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://mpd.wikia.com/
 
-Source0:        http://downloads.sourceforge.net/musicpd/%{name}-%{version}.tar.bz2
+#Source0:        http://downloads.sourceforge.net/musicpd/%{name}-%{version}.tar.xz
+# Used master since the 0.17 branch does not work with new ffmpeg
+# Note that the master branch doesn't work with Fedora's version of libmpcdec
+# which needs updating.
+# https://bugzilla.redhat.com/show_bug.cgi?id=1014468
+# http://bugs.musicpd.org/view.php?id=3814#bugnotes
+Source0:        %{name}-%{version}-git-%{git_commit}.tar.gz
 Source1:        mpd.logrotate
 Source2:        mpd.tmpfiles.d
-Patch0:         mpd-0.16.7-default-pulseaudio.patch
-Patch1:         mpd-0.16.8-socket-location.patch
+Patch0:         mpd-0.18-mpdconf.patch
 
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
@@ -45,7 +53,10 @@ BuildRequires:     libid3tag-devel
 BuildRequires:     libmad-devel
 BuildRequires:     libmms-devel
 BuildRequires:     libmodplug-devel
-BuildRequires:     libmpcdec-devel
+
+# Need new version with SV8
+# BuildRequires:     libmpcdec-devel
+
 BuildRequires:     libogg-devel
 BuildRequires:     libsamplerate-devel
 BuildRequires:     libshout-devel
@@ -56,7 +67,9 @@ BuildRequires:     sqlite-devel
 BuildRequires:     wavpack-devel
 BuildRequires:     zlib-devel
 BuildRequires:     zziplib-devel
-BuildRequires:     systemd-units
+BuildRequires:     systemd
+BuildRequires:     libcdio-paranoia-devel
+BuildRequires:     opus-devel
 Requires(pre):     shadow-utils
 Requires(post):    systemd
 Requires(preun):   systemd
@@ -74,16 +87,17 @@ browsing and playing your MPD music collection.
 
 
 %prep
-%setup -q
+%setup -q -n %{name}
 %patch0 -p0
-%patch1 -p1
 
 %build
+./autogen.sh
 %{configure} \
     --with-systemdsystemunitdir=%{_unitdir} \
     --enable-bzip2 \
     --enable-lastfm \
     --enable-mikmod \
+    --disable-mpc \
     --enable-zzip
 make %{?_smp_mflags}
 
@@ -160,6 +174,11 @@ fi
 
 
 %changelog
+* Wed Oct 02 2013 Ankur Sinha <ankursinha AT fedoraproject DOT org> - 1:0.18-0.1.git0e0be02
+- Update mpdconf.example patch
+- Update to git checkout from master since 0.17 doesn't use new ffmpeg at all
+- disable mpcdec support until Fedora package is updated
+
 * Thu Aug 15 2013 Nicolas Chauvet <kwizart@gmail.com> - 1:0.17.3-4
 - Rebuilt for FFmpeg 2.0.x
 
