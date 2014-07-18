@@ -14,27 +14,23 @@
 %global  mpd_logfile         %{mpd_logdir}/mpd.log
 %global  mpd_statefile       %{mpd_homedir}/mpdstate
 
-%global git_commit          0e0be0243bdf2fe8cbd88bd530ec7b7040b4d9da
-%global shortcommit         %(c=%{git_commit}; echo ${c:0:7})
-
 Name:           mpd
 Epoch:          1
-Version:        0.18
-Release:        0.1.git%{shortcommit}%{?dist}
+Version:        0.18.11
+Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
-URL:            http://mpd.wikia.com/
+URL:            http://www.musicpd.org/
 
-#Source0:        http://downloads.sourceforge.net/musicpd/%{name}-%{version}.tar.xz
-# Used master since the 0.17 branch does not work with new ffmpeg
-# Note that the master branch doesn't work with Fedora's version of libmpcdec
-# which needs updating.
+Source0:        http://www.musicpd.org/download/mpd/0.18/mpd-%{version}.tar.xz
+Source1:        http://www.musicpd.org/download/mpd/0.18/mpd-%{version}.tar.xz.sig
+# Note that the 0.18.x branch doesn't yet work with Fedora's version of
+# libmpcdec which needs updating.
 # https://bugzilla.redhat.com/show_bug.cgi?id=1014468
 # http://bugs.musicpd.org/view.php?id=3814#bugnotes
-Source0:        %{name}-%{version}-git-%{git_commit}.tar.gz
-Source1:        mpd.logrotate
-Source2:        mpd.tmpfiles.d
+Source2:        mpd.logrotate
+Source3:        mpd.tmpfiles.d
 Patch0:         mpd-0.18-mpdconf.patch
 
 BuildRequires:     alsa-lib-devel
@@ -48,6 +44,7 @@ BuildRequires:     flac-devel
 BuildRequires:     jack-audio-connection-kit-devel
 BuildRequires:     lame-devel
 BuildRequires:     libao-devel
+BuildRequires:     libcdio-paranoia-devel
 BuildRequires:     libcurl-devel
 BuildRequires:     libid3tag-devel
 BuildRequires:     libmad-devel
@@ -62,14 +59,15 @@ BuildRequires:     libsamplerate-devel
 BuildRequires:     libshout-devel
 BuildRequires:     libvorbis-devel
 BuildRequires:     mikmod-devel
+BuildRequires:     opus-devel
 BuildRequires:     pkgconfig(libpulse)
 BuildRequires:     sqlite-devel
+BuildRequires:     systemd-devel
 BuildRequires:     wavpack-devel
+BuildRequires:     yajl-devel
 BuildRequires:     zlib-devel
 BuildRequires:     zziplib-devel
-BuildRequires:     systemd
-BuildRequires:     libcdio-paranoia-devel
-BuildRequires:     opus-devel
+
 Requires(pre):     shadow-utils
 Requires(post):    systemd
 Requires(preun):   systemd
@@ -87,7 +85,7 @@ browsing and playing your MPD music collection.
 
 
 %prep
-%setup -q -n %{name}
+%setup -q -n %{name}-%{version}
 %patch0 -p0
 
 %build
@@ -95,8 +93,9 @@ browsing and playing your MPD music collection.
 %{configure} \
     --with-systemdsystemunitdir=%{_unitdir} \
     --enable-bzip2 \
-    --enable-lastfm \
+    --enable-soundcloud \
     --enable-mikmod \
+    --enable-pipe-output \
     --disable-mpc \
     --enable-zzip
 make %{?_smp_mflags}
@@ -104,10 +103,10 @@ make %{?_smp_mflags}
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
 
-install -p -D -m 0644 %{SOURCE1} \
+install -p -D -m 0644 %{SOURCE2} \
     $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/mpd
 
-install -p -D -m 0644 %{SOURCE2} \
+install -p -D -m 0644 %{SOURCE3} \
     $RPM_BUILD_ROOT%{_prefix}/lib/tmpfiles.d/mpd.conf
 mkdir -p %{buildroot}/run
 install -d -m 0755 %{buildroot}/%{mpd_rundir}
@@ -174,6 +173,23 @@ fi
 
 
 %changelog
+* Thu Jul 17 2014 Ankur Sinha <ankursinha AT fedoraproject DOT org> - 1:0.18.11-1
+- Update to latest upstream release
+
+* Mon May 05 2014 Jamie Nguyen <jamielinux@fedoraproject.org> - 1:0.18.10-1
+- update to upstream release 0.18.10
+
+* Sat Mar 29 2014 Sérgio Basto <sergio@serjux.com> - 1:0.18.9-2
+- Rebuilt for ffmpeg-2.2
+
+* Sun Mar 23 2014 Jamie Nguyen <jamielinux@fedoraproject.org> - 1:0.18.9-1
+- update to upstream release 0.18.9
+- update URL
+- add detached signature as Source1
+- add --enable-soundcloud and BR: yajl-devel
+- add --enable-pipe-output
+- add BR: systemd-devel
+
 * Wed Oct 02 2013 Ankur Sinha <ankursinha AT fedoraproject DOT org> - 1:0.18-0.1.git0e0be02
 - Update mpdconf.example patch
 - Update to git checkout from master since 0.17 doesn't use new ffmpeg at all
