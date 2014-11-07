@@ -16,15 +16,15 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.18.16
-Release:        2%{?dist}
+Version:        0.19.2
+Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://www.musicpd.org/
 
-Source0:        http://www.musicpd.org/download/mpd/0.18/mpd-%{version}.tar.xz
-Source1:        http://www.musicpd.org/download/mpd/0.18/mpd-%{version}.tar.xz.sig
+Source0:        http://www.musicpd.org/download/mpd/0.19/mpd-%{version}.tar.xz
+Source1:        http://www.musicpd.org/download/mpd/0.19/mpd-%{version}.tar.xz.sig
 # Note that the 0.18.x branch doesn't yet work with Fedora's version of
 # libmpcdec which needs updating.
 # https://bugzilla.redhat.com/show_bug.cgi?id=1014468
@@ -32,11 +32,13 @@ Source1:        http://www.musicpd.org/download/mpd/0.18/mpd-%{version}.tar.xz.s
 Source2:        mpd.logrotate
 Source3:        mpd.tmpfiles.d
 Patch0:         mpd-0.18-mpdconf.patch
+Patch1:         mpd-0.19.2-Remove-systemd-controlgroup-directives.patch
 
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
 BuildRequires:     autoconf
 BuildRequires:     avahi-glib-devel
+BuildRequires:     boost-devel
 BuildRequires:     bzip2-devel
 BuildRequires:     faad2-devel
 BuildRequires:     ffmpeg-devel
@@ -61,6 +63,7 @@ BuildRequires:     libvorbis-devel
 BuildRequires:     mikmod-devel
 BuildRequires:     opus-devel
 BuildRequires:     pkgconfig(libpulse)
+BuildRequires:     soxr-devel
 BuildRequires:     sqlite-devel
 BuildRequires:     systemd-devel
 BuildRequires:     wavpack-devel
@@ -87,6 +90,7 @@ browsing and playing your MPD music collection.
 %prep
 %setup -q -n %{name}-%{version}
 %patch0 -p0
+%patch1 -p1
 
 %build
 ./autogen.sh
@@ -97,7 +101,8 @@ browsing and playing your MPD music collection.
     --enable-mikmod \
     --enable-pipe-output \
     --disable-mpc \
-    --enable-zzip
+    --enable-zzip \
+    --enable-soxr
 make %{?_smp_mflags}
 
 %install
@@ -152,27 +157,37 @@ fi
 
 
 %files
-%doc AUTHORS COPYING README UPGRADING
+%doc AUTHORS COPYING README
 %{_bindir}/%{name}
 %{_mandir}/man1/mpd.1*
 %{_mandir}/man5/mpd.conf.5*
 %{_unitdir}/mpd.service
+%{_unitdir}/mpd.socket
 %config(noreplace) %{mpd_configfile}
 %config(noreplace) %{_sysconfdir}/logrotate.d/mpd
-%{_prefix}/lib/tmpfiles.d/%{name}.conf
+%{_prefix}/lib/tmpfiles.d/mpd.conf
 
 %defattr(-,%{mpd_user},%{mpd_group})
 %dir %{mpd_homedir}
 %dir %{mpd_logdir}
 %dir %{mpd_musicdir}
 %dir %{mpd_playlistsdir}
-%dir %{mpd_rundir}
+%ghost %dir %{mpd_rundir}
 %ghost %{mpd_dbfile}
 %ghost %{mpd_logfile}
 %ghost %{mpd_statefile}
 
 
 %changelog
+* Fri Nov 07 2014 Jamie Nguyen <jamielinux@fedoraproject.org> - 1:0.19.2-1
+- update to upstream release 0.19.2
+
+* Fri Nov 07 2014 Jamie Nguyen <jamielinux@fedoraproject.org> - 1:0.19.1-2
+- fix rpmlint: "non-ghost-in-run /run/mpd"
+
+* Thu Oct 30 2014 Peter Vrabec <pvrabec@gmail.com> - 1:0.19.1-1
+- update to upstream release 0.19.1
+
 * Mon Oct 20 2014 Sérgio Basto <sergio@serjux.com> - 1:0.18.16-2
 - Rebuilt for FFmpeg 2.4.3
 
