@@ -16,7 +16,7 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.19.2
+Version:        0.19.9
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
@@ -75,7 +75,6 @@ Requires(pre):     shadow-utils
 Requires(post):    systemd
 Requires(preun):   systemd
 Requires(postun):  systemd
-Conflicts:         mpich2
 
 %description
 Music Player Daemon (MPD) is a flexible, powerful, server-side application for
@@ -179,6 +178,10 @@ fi
 
 
 %changelog
+* Mon May 04 2015 Ankur Sinha <ankursinha AT fedoraproject DOT org> 1:0.19.9-1
+- Update to latest upstream version
+- remove conflicts with mpich2 - it doesn't apply any more
+
 * Fri Nov 07 2014 Jamie Nguyen <jamielinux@fedoraproject.org> - 1:0.19.2-1
 - update to upstream release 0.19.2
 
