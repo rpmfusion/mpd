@@ -16,7 +16,7 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.19.9
+Version:        0.19.14
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
@@ -32,7 +32,6 @@ Source1:        http://www.musicpd.org/download/mpd/0.19/mpd-%{version}.tar.xz.s
 Source2:        mpd.logrotate
 Source3:        mpd.tmpfiles.d
 Patch0:         mpd-0.18-mpdconf.patch
-Patch1:         mpd-0.19.2-Remove-systemd-controlgroup-directives.patch
 
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
@@ -89,7 +88,6 @@ browsing and playing your MPD music collection.
 %prep
 %setup -q -n %{name}-%{version}
 %patch0 -p0
-%patch1 -p1
 
 %build
 ./autogen.sh
@@ -178,6 +176,10 @@ fi
 
 
 %changelog
+* Sun Apr 03 2016 Jonathan Dieter <jdieter@gmail.com> 1:0.19.14-1
+- Update to latest upstream version
+- Remove unneeded systemd service patch (fixed upstream)
+
 * Mon May 04 2015 Ankur Sinha <ankursinha AT fedoraproject DOT org> 1:0.19.9-1
 - Update to latest upstream version
 - remove conflicts with mpich2 - it doesn't apply any more
