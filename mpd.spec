@@ -16,7 +16,7 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.19.14
+Version:        0.19.16
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
@@ -176,6 +176,9 @@ fi
 
 
 %changelog
+* Tue Jun 21 2016 Nicolas Chauvet <kwizart@gmail.com> - 1:0.19.16-1
+- Update to 1.19.16
+
 * Sun Apr 03 2016 Jonathan Dieter <jdieter@gmail.com> 1:0.19.14-1
 - Update to latest upstream version
 - Remove unneeded systemd service patch (fixed upstream)
