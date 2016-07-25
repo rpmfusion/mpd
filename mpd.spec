@@ -16,7 +16,7 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.19.16
+Version:        0.19.17
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
@@ -69,6 +69,7 @@ BuildRequires:     wavpack-devel
 BuildRequires:     yajl-devel
 BuildRequires:     zlib-devel
 BuildRequires:     zziplib-devel
+BuildRequires:     libsidplayfp-devel
 
 Requires(pre):     shadow-utils
 Requires(post):    systemd
@@ -98,6 +99,8 @@ browsing and playing your MPD music collection.
     --enable-mikmod \
     --enable-pipe-output \
     --disable-mpc \
+    --enable-sidplay \
+    --enable-systemd-daemon \
     --enable-zzip \
     --enable-soxr
 make %{?_smp_mflags}
@@ -176,6 +179,11 @@ fi
 
 
 %changelog
+* Mon Jul 25 2016 Ankur Sinha <ankursinha AT fedoraproject DOT org> - 0.19.17-1
+- Update to latest upstream release
+- Enable sidplay
+- Attempt to enable systemd daemon usage
+
 * Tue Jun 21 2016 Nicolas Chauvet <kwizart@gmail.com> - 1:0.19.16-1
 - Update to 1.19.16
 
