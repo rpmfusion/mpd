@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.19.17
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -89,6 +89,8 @@ browsing and playing your MPD music collection.
 %prep
 %setup -q -n %{name}-%{version}
 %patch0 -p0
+# There is no libsystemd-daemon in F25
+sed -i -e 's@libsystemd-daemon@libsystemd@g' configure.ac
 
 %build
 ./autogen.sh
@@ -99,7 +101,6 @@ browsing and playing your MPD music collection.
     --enable-mikmod \
     --enable-pipe-output \
     --disable-mpc \
-    --enable-sidplay \
     --enable-systemd-daemon \
     --enable-zzip \
     --enable-soxr
@@ -179,6 +180,10 @@ fi
 
 
 %changelog
+* Tue Jul 26 2016 leigh scott <leigh123linux@googlemail.com> - 1:0.19.17-2
+- Rebuilt for f25 systemd changes
+- Disable sidplay (configure fails to find libsidplayfp)
+
 * Mon Jul 25 2016 Ankur Sinha <ankursinha AT fedoraproject DOT org> - 0.19.17-1
 - Update to latest upstream release
 - Enable sidplay
