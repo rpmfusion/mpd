@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.19.17
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -180,6 +180,9 @@ fi
 
 
 %changelog
+* Sat Jul 30 2016 Julian Sikorski <belegdol@fedoraproject.org> - 1:0.19.17-3
+- Rebuilt for ffmpeg-3.1.1
+
 * Tue Jul 26 2016 leigh scott <leigh123linux@googlemail.com> - 1:0.19.17-2
 - Rebuilt for f25 systemd changes
 - Disable sidplay (configure fails to find libsidplayfp)
