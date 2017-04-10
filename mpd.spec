@@ -16,15 +16,15 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.19.17
-Release:        5%{?dist}
+Version:        0.20.6
+Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://www.musicpd.org/
 
-Source0:        http://www.musicpd.org/download/mpd/0.19/mpd-%{version}.tar.xz
-Source1:        http://www.musicpd.org/download/mpd/0.19/mpd-%{version}.tar.xz.sig
+Source0:        http://www.musicpd.org/download/mpd/0.20/mpd-%{version}.tar.xz
+Source1:        http://www.musicpd.org/download/mpd/0.20/mpd-%{version}.tar.xz.sig
 # Note that the 0.18.x branch doesn't yet work with Fedora's version of
 # libmpcdec which needs updating.
 # https://bugzilla.redhat.com/show_bug.cgi?id=1014468
@@ -96,6 +96,7 @@ sed -i -e 's@libsystemd-daemon@libsystemd@g' configure.ac
 ./autogen.sh
 %{configure} \
     --with-systemdsystemunitdir=%{_unitdir} \
+    --with-systemduserunitdir=%{_userunitdir} \
     --enable-bzip2 \
     --enable-soundcloud \
     --enable-mikmod \
@@ -104,10 +105,11 @@ sed -i -e 's@libsystemd-daemon@libsystemd@g' configure.ac
     --enable-systemd-daemon \
     --enable-zzip \
     --enable-soxr
-make %{?_smp_mflags}
+
+%{make_build}
 
 %install
-make install DESTDIR=$RPM_BUILD_ROOT
+%{make_install}
 
 install -p -D -m 0644 %{SOURCE2} \
     $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/mpd
@@ -158,12 +160,14 @@ fi
 
 
 %files
-%doc AUTHORS COPYING README
+%doc AUTHORS README.md
+%license COPYING
 %{_bindir}/%{name}
 %{_mandir}/man1/mpd.1*
 %{_mandir}/man5/mpd.conf.5*
 %{_unitdir}/mpd.service
 %{_unitdir}/mpd.socket
+%{_userunitdir}/mpd.service
 %config(noreplace) %{mpd_configfile}
 %config(noreplace) %{_sysconfdir}/logrotate.d/mpd
 %{_prefix}/lib/tmpfiles.d/mpd.conf
@@ -180,6 +184,10 @@ fi
 
 
 %changelog
+* Mon Apr 10 2017 Leigh Scott <leigh123linux@googlemail.com> - 1:0.20.6-1
+- Update to latest upstream version
+- Add systemd user service (rfbz #3768)
+
 * Mon Mar 20 2017 RPM Fusion Release Engineering <kwizart@rpmfusion.org> - 1:0.19.17-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
