@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.20.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -184,6 +184,9 @@ fi
 
 
 %changelog
+* Sat Apr 29 2017 Leigh Scott <leigh123linux@googlemail.com> - 1:0.20.6-2
+- Rebuild for ffmpeg update
+
 * Mon Apr 10 2017 Leigh Scott <leigh123linux@googlemail.com> - 1:0.20.6-1
 - Update to latest upstream version
 - Add systemd user service (rfbz #3768)
