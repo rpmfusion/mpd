@@ -16,8 +16,8 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.19.17
-Release:        3%{?dist}
+Version:        0.19.21
+Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -180,6 +180,9 @@ fi
 
 
 %changelog
+* Mon May 22 2017 Nicolas Chauvet <kwizart@gmail.com> - 1:0.19.21-1
+- Update to 0.19.21
+
 * Sat Jul 30 2016 Julian Sikorski <belegdol@fedoraproject.org> - 1:0.19.17-3
 - Rebuilt for ffmpeg-3.1.1
 
