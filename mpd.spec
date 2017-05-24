@@ -16,15 +16,15 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.18.11
+Version:        0.19.21
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
 URL:            http://www.musicpd.org/
 
-Source0:        http://www.musicpd.org/download/mpd/0.18/mpd-%{version}.tar.xz
-Source1:        http://www.musicpd.org/download/mpd/0.18/mpd-%{version}.tar.xz.sig
+Source0:        http://www.musicpd.org/download/mpd/0.19/mpd-%{version}.tar.xz
+Source1:        http://www.musicpd.org/download/mpd/0.19/mpd-%{version}.tar.xz.sig
 # Note that the 0.18.x branch doesn't yet work with Fedora's version of
 # libmpcdec which needs updating.
 # https://bugzilla.redhat.com/show_bug.cgi?id=1014468
@@ -37,6 +37,7 @@ BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
 BuildRequires:     autoconf
 BuildRequires:     avahi-glib-devel
+BuildRequires:     boost-devel
 BuildRequires:     bzip2-devel
 BuildRequires:     faad2-devel
 BuildRequires:     ffmpeg-devel
@@ -46,6 +47,7 @@ BuildRequires:     lame-devel
 BuildRequires:     libao-devel
 BuildRequires:     libcdio-paranoia-devel
 BuildRequires:     libcurl-devel
+BuildRequires:     libicu-devel
 BuildRequires:     libid3tag-devel
 BuildRequires:     libmad-devel
 BuildRequires:     libmms-devel
@@ -61,18 +63,19 @@ BuildRequires:     libvorbis-devel
 BuildRequires:     mikmod-devel
 BuildRequires:     opus-devel
 BuildRequires:     pkgconfig(libpulse)
+BuildRequires:     soxr-devel
 BuildRequires:     sqlite-devel
 BuildRequires:     systemd-devel
 BuildRequires:     wavpack-devel
 BuildRequires:     yajl-devel
 BuildRequires:     zlib-devel
 BuildRequires:     zziplib-devel
+BuildRequires:     libsidplayfp-devel
 
 Requires(pre):     shadow-utils
 Requires(post):    systemd
 Requires(preun):   systemd
 Requires(postun):  systemd
-Conflicts:         mpich2
 
 %description
 Music Player Daemon (MPD) is a flexible, powerful, server-side application for
@@ -87,6 +90,8 @@ browsing and playing your MPD music collection.
 %prep
 %setup -q -n %{name}-%{version}
 %patch0 -p0
+# There is no libsystemd-daemon in F25
+sed -i -e 's@libsystemd-daemon@libsystemd@g' configure.ac
 
 %build
 ./autogen.sh
@@ -97,7 +102,9 @@ browsing and playing your MPD music collection.
     --enable-mikmod \
     --enable-pipe-output \
     --disable-mpc \
-    --enable-zzip
+    --enable-systemd-daemon \
+    --enable-zzip \
+    --enable-soxr
 make %{?_smp_mflags}
 
 %install
@@ -152,27 +159,75 @@ fi
 
 
 %files
-%doc AUTHORS COPYING README UPGRADING
+%doc AUTHORS COPYING README
 %{_bindir}/%{name}
 %{_mandir}/man1/mpd.1*
 %{_mandir}/man5/mpd.conf.5*
 %{_unitdir}/mpd.service
+%{_unitdir}/mpd.socket
 %config(noreplace) %{mpd_configfile}
 %config(noreplace) %{_sysconfdir}/logrotate.d/mpd
-%{_prefix}/lib/tmpfiles.d/%{name}.conf
+%{_prefix}/lib/tmpfiles.d/mpd.conf
 
 %defattr(-,%{mpd_user},%{mpd_group})
 %dir %{mpd_homedir}
 %dir %{mpd_logdir}
 %dir %{mpd_musicdir}
 %dir %{mpd_playlistsdir}
-%dir %{mpd_rundir}
+%ghost %dir %{mpd_rundir}
 %ghost %{mpd_dbfile}
 %ghost %{mpd_logfile}
 %ghost %{mpd_statefile}
 
 
 %changelog
+* Mon May 22 2017 Nicolas Chauvet <kwizart@gmail.com> - 1:0.19.21-1
+- Update to 0.19.21
+
+* Sat Jul 30 2016 Julian Sikorski <belegdol@fedoraproject.org> - 1:0.19.17-3
+- Rebuilt for ffmpeg-3.1.1
+
+* Tue Jul 26 2016 leigh scott <leigh123linux@googlemail.com> - 1:0.19.17-2
+- Rebuilt for f25 systemd changes
+- Disable sidplay (configure fails to find libsidplayfp)
+
+* Mon Jul 25 2016 Ankur Sinha <ankursinha AT fedoraproject DOT org> - 0.19.17-1
+- Update to latest upstream release
+- Enable sidplay
+- Attempt to enable systemd daemon usage
+
+* Tue Jun 21 2016 Nicolas Chauvet <kwizart@gmail.com> - 1:0.19.16-1
+- Update to 1.19.16
+
+* Sun Apr 03 2016 Jonathan Dieter <jdieter@gmail.com> 1:0.19.14-1
+- Update to latest upstream version
+- Remove unneeded systemd service patch (fixed upstream)
+
+* Mon May 04 2015 Ankur Sinha <ankursinha AT fedoraproject DOT org> 1:0.19.9-1
+- Update to latest upstream version
+- remove conflicts with mpich2 - it doesn't apply any more
+
+* Fri Nov 07 2014 Jamie Nguyen <jamielinux@fedoraproject.org> - 1:0.19.2-1
+- update to upstream release 0.19.2
+
+* Fri Nov 07 2014 Jamie Nguyen <jamielinux@fedoraproject.org> - 1:0.19.1-2
+- fix rpmlint: "non-ghost-in-run /run/mpd"
+
+* Thu Oct 30 2014 Peter Vrabec <pvrabec@gmail.com> - 1:0.19.1-1
+- update to upstream release 0.19.1
+
+* Mon Oct 20 2014 Sérgio Basto <sergio@serjux.com> - 1:0.18.16-2
+- Rebuilt for FFmpeg 2.4.3
+
+* Sun Oct 05 2014 Jamie Nguyen <jamielinux@fedoraproject.org> - 1:0.18.16-1
+- update to upstream release 0.18.16
+
+* Fri Sep 26 2014 Nicolas Chauvet <kwizart@gmail.com> - 1:0.18.11-3
+- Rebuilt for FFmpeg 2.4.x
+
+* Thu Aug 07 2014 Sérgio Basto <sergio@serjux.com> - 1:0.18.11-2
+- Rebuilt for ffmpeg-2.3
+
 * Thu Jul 17 2014 Ankur Sinha <ankursinha AT fedoraproject DOT org> - 1:0.18.11-1
 - Update to latest upstream release
 
