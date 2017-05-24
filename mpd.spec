@@ -47,6 +47,7 @@ BuildRequires:     lame-devel
 BuildRequires:     libao-devel
 BuildRequires:     libcdio-paranoia-devel
 BuildRequires:     libcurl-devel
+BuildRequires:     libicu-devel
 BuildRequires:     libid3tag-devel
 BuildRequires:     libmad-devel
 BuildRequires:     libmms-devel
