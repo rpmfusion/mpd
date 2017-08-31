@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.20.8
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -184,6 +184,9 @@ fi
 
 
 %changelog
+* Thu Aug 31 2017 RPM Fusion Release Engineering <kwizart@rpmfusion.org> - 1:0.20.8-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
 * Mon May 22 2017 Nicolas Chauvet <kwizart@gmail.com> - 1:0.20.8-1
 - Update to 0.20.8
 
