@@ -1,0 +1,22 @@
+--- a/systemd/system/mpd.service.in
++++ b/systemd/system/mpd.service.in
+@@ -15,7 +15,6 @@
+ ProtectSystem=yes
+ 
+ # more paranoid security settings
+-NoNewPrivileges=yes
+ ProtectKernelTunables=yes
+ ProtectControlGroups=yes
+ ProtectKernelModules=yes
+
+--- a/systemd/user/mpd.service.in
++++ b/systemd/user/mpd.service.in
+@@ -15,7 +15,6 @@
+ ProtectSystem=yes
+ 
+ # more paranoid security settings
+-NoNewPrivileges=yes
+ ProtectKernelTunables=yes
+ ProtectControlGroups=yes
+ # AF_NETLINK is required by libsmbclient, or it will exit() .. *sigh*
+

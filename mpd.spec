@@ -16,8 +16,8 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.20.8
-Release:        2%{?dist}
+Version:        0.20.10
+Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -32,6 +32,7 @@ Source1:        http://www.musicpd.org/download/mpd/0.20/mpd-%{version}.tar.xz.s
 Source2:        mpd.logrotate
 Source3:        mpd.tmpfiles.d
 Patch0:         mpd-0.18-mpdconf.patch
+Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
 
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
@@ -89,6 +90,7 @@ browsing and playing your MPD music collection.
 %prep
 %setup -q -n %{name}-%{version}
 %patch0 -p0
+%patch1 -p1
 # There is no libsystemd-daemon in F25
 sed -i -e 's@libsystemd-daemon@libsystemd@g' configure.ac
 
@@ -184,6 +186,10 @@ fi
 
 
 %changelog
+* Sat Oct 07 2017 Leigh Scott <leigh123linux@googlemail.com> - 1:0.20.10-1
+- Update to 0.20.10
+- Remove NoNewPrivileges (rfbz #4549)
+
 * Thu Aug 31 2017 RPM Fusion Release Engineering <kwizart@rpmfusion.org> - 1:0.20.8-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
