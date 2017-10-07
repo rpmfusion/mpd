@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.20.10
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -93,9 +93,10 @@ browsing and playing your MPD music collection.
 %patch1 -p1
 # There is no libsystemd-daemon in F25
 sed -i -e 's@libsystemd-daemon@libsystemd@g' configure.ac
+sed -i -e 's@ -lresid-builder@@g' configure.ac
+NOCONFIGURE=1 ./autogen.sh
 
 %build
-./autogen.sh
 %{configure} \
     --with-systemdsystemunitdir=%{_unitdir} \
     --with-systemduserunitdir=%{_userunitdir} \
@@ -106,7 +107,8 @@ sed -i -e 's@libsystemd-daemon@libsystemd@g' configure.ac
     --disable-mpc \
     --enable-systemd-daemon \
     --enable-zzip \
-    --enable-soxr
+    --enable-soxr \
+    --enable-sidplay
 
 %{make_build}
 
@@ -186,6 +188,9 @@ fi
 
 
 %changelog
+* Sat Oct 07 2017 Leigh Scott <leigh123linux@googlemail.com> - 1:0.20.10-2
+- Enable sidplay (rfbz #2305)
+
 * Sat Oct 07 2017 Leigh Scott <leigh123linux@googlemail.com> - 1:0.20.10-1
 - Update to 0.20.10
 - Remove NoNewPrivileges (rfbz #4549)
