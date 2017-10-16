@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.20.10
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -188,6 +188,9 @@ fi
 
 
 %changelog
+* Mon Oct 16 2017 Leigh Scott <leigh123linux@googlemail.com> - 1:0.20.10-3
+- Rebuild for ffmpeg update
+
 * Sat Oct 07 2017 Leigh Scott <leigh123linux@googlemail.com> - 1:0.20.10-2
 - Enable sidplay (rfbz #2305)
 
