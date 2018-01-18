@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.20.10
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -188,6 +188,9 @@ fi
 
 
 %changelog
+* Thu Jan 18 2018 Leigh Scott <leigh123linux@googlemail.com> - 1:0.20.10-4
+- Rebuilt for ffmpeg-3.5 git
+
 * Mon Oct 16 2017 Leigh Scott <leigh123linux@googlemail.com> - 1:0.20.10-3
 - Rebuild for ffmpeg update
 
