@@ -16,8 +16,8 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.20.10
-Release:        5%{?dist}
+Version:        0.20.15
+Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -188,6 +188,9 @@ fi
 
 
 %changelog
+* Sun Jan 28 2018 Nicolas Chauvet <kwizart@gmail.com> - 1:0.20.15-1
+- Update to 0.20.15
+
 * Sun Jan 28 2018 Nicolas Chauvet <kwizart@gmail.com> - 1:0.20.10-5
 - Rebuilt for libcdio
 
