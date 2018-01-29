@@ -1,0 +1,12 @@
+--- a/src/archive/plugins/Iso9660ArchivePlugin.cxx
++++ b/src/archive/plugins/Iso9660ArchivePlugin.cxx
+@@ -115,7 +115,7 @@
+ 			visitor.VisitArchiveEntry(path + 1);
+ 		}
+ 	}
+-	_cdio_list_free (entlist, true);
++	_cdio_list_free (entlist, true, NULL);
+ }
+ 
+ static ArchiveFile *
+
