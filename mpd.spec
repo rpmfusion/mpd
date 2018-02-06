@@ -16,7 +16,7 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.20.15
+Version:        0.20.16
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
@@ -33,7 +33,6 @@ Source2:        mpd.logrotate
 Source3:        mpd.tmpfiles.d
 Patch0:         mpd-0.18-mpdconf.patch
 Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
-Patch2:         libcdio2_buildfix.patch
 
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
@@ -92,7 +91,6 @@ browsing and playing your MPD music collection.
 %setup -q -n %{name}-%{version}
 %patch0 -p0
 %patch1 -p1
-%patch2 -p1
 # There is no libsystemd-daemon in F25
 sed -i -e 's@libsystemd-daemon@libsystemd@g' configure.ac
 sed -i -e 's@ -lresid-builder@@g' configure.ac
@@ -190,6 +188,9 @@ fi
 
 
 %changelog
+* Tue Feb 06 2018 Leigh Scott <leigh123linux@googlemail.com> - 1:0.20.16-1
+- Update to 0.20.16
+
 * Sun Jan 28 2018 Nicolas Chauvet <kwizart@gmail.com> - 1:0.20.15-1
 - Update to 0.20.15
 
