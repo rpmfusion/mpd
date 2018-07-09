@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.20.19
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 Group:          Applications/Multimedia
@@ -37,7 +37,6 @@ Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
 BuildRequires:     autoconf
-BuildRequires:     avahi-glib-devel
 BuildRequires:     boost-devel
 BuildRequires:     bzip2-devel
 BuildRequires:     faad2-devel
@@ -52,7 +51,22 @@ BuildRequires:     libid3tag-devel
 BuildRequires:     libmad-devel
 BuildRequires:     libmms-devel
 BuildRequires:     libmodplug-devel
-
+BuildRequires:     adplug-devel
+BuildRequires:     avahi-glib-devel
+BuildRequires:     avahi-compat-libdns_sd-devel
+BuildRequires:     avahi-devel
+BuildRequires:     dbus-devel
+BuildRequires:     expat-devel
+BuildRequires:     fluidsynth-devel
+BuildRequires:     libmpdclient-devel
+BuildRequires:     libnfs-devel
+BuildRequires:     libsmbclient-devel
+BuildRequires:     libsndfile-devel
+BuildRequires:     libupnp-devel
+BuildRequires:     mpg123-devel
+BuildRequires:     openal-soft-devel
+BuildRequires:     twolame-devel
+BuildRequires:     wildmidi-devel
 # Need new version with SV8
 # BuildRequires:     libmpcdec-devel
 
@@ -188,6 +202,10 @@ fi
 
 
 %changelog
+* Mon Jul 09 2018 Ankur Sinha <ankursinha AT fedoraproject DOT org> - 1:0.20.19-2
+- Update to add BRs for plugins
+- rpmfusionbz: 4961
+
 * Sun Apr 29 2018 Sérgio Basto <sergio@serjux.com> - 1:0.20.19-1
 - Update 0.20.19
 
