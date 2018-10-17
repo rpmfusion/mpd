@@ -41,6 +41,7 @@ BuildRequires:     bzip2-devel
 BuildRequires:     faad2-devel
 BuildRequires:     ffmpeg-devel
 BuildRequires:     flac-devel
+BuildRequires:     gcc
 BuildRequires:     jack-audio-connection-kit-devel
 BuildRequires:     lame-devel
 BuildRequires:     libao-devel
