@@ -20,10 +20,10 @@ Version:        0.20.21
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
-URL:            http://www.musicpd.org/
+URL:            https://www.musicpd.org
 
-Source0:        http://www.musicpd.org/download/mpd/0.20/mpd-%{version}.tar.xz
-Source1:        http://www.musicpd.org/download/mpd/0.20/mpd-%{version}.tar.xz.sig
+Source0:        %{url}/download/mpd/0.20/mpd-%{version}.tar.xz
+Source1:        %{url}/download/mpd/0.20/mpd-%{version}.tar.xz.sig
 # Note that the 0.18.x branch doesn't yet work with Fedora's version of
 # libmpcdec which needs updating.
 # https://bugzilla.redhat.com/show_bug.cgi?id=1014468
