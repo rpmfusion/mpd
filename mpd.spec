@@ -20,7 +20,6 @@ Version:        0.20.19
 Release:        3%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
-Group:          Applications/Multimedia
 URL:            http://www.musicpd.org/
 
 Source0:        http://www.musicpd.org/download/mpd/0.20/mpd-%{version}.tar.xz
