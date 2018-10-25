@@ -189,6 +189,7 @@ fi
 %config(noreplace) %{mpd_configfile}
 %config(noreplace) %{_sysconfdir}/logrotate.d/mpd
 %{_prefix}/lib/tmpfiles.d/mpd.conf
+%{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
 
 %defattr(-,%{mpd_user},%{mpd_group})
 %dir %{mpd_homedir}
