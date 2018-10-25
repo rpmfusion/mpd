@@ -16,7 +16,7 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.20.21
+Version:        0.20.22
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
@@ -130,31 +130,31 @@ NOCONFIGURE=1 ./autogen.sh
 %{make_install}
 
 install -p -D -m 0644 %{SOURCE2} \
-    $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/mpd
+    %buildroot%{_sysconfdir}/logrotate.d/mpd
 
 install -p -D -m 0644 %{SOURCE3} \
-    $RPM_BUILD_ROOT%{_prefix}/lib/tmpfiles.d/mpd.conf
+    %buildroot%{_prefix}/lib/tmpfiles.d/mpd.conf
 mkdir -p %{buildroot}/run
 install -d -m 0755 %{buildroot}/%{mpd_rundir}
 
-mkdir -p $RPM_BUILD_ROOT%{mpd_homedir}
-mkdir -p $RPM_BUILD_ROOT%{mpd_logdir}
-mkdir -p $RPM_BUILD_ROOT%{mpd_musicdir}
-mkdir -p $RPM_BUILD_ROOT%{mpd_playlistsdir}
-touch $RPM_BUILD_ROOT%{mpd_dbfile}
-touch $RPM_BUILD_ROOT%{mpd_logfile}
-touch $RPM_BUILD_ROOT%{mpd_statefile}
+mkdir -p %buildroot%{mpd_homedir}
+mkdir -p %buildroot%{mpd_logdir}
+mkdir -p %buildroot%{mpd_musicdir}
+mkdir -p %buildroot%{mpd_playlistsdir}
+touch %buildroot%{mpd_dbfile}
+touch %buildroot%{mpd_logfile}
+touch %buildroot%{mpd_statefile}
 
-install -D -p -m644 doc/mpdconf.example $RPM_BUILD_ROOT%{mpd_configfile}
+install -D -p -m644 doc/mpdconf.example %buildroot%{mpd_configfile}
 sed -i -e "s|#music_directory.*$|music_directory \"%{mpd_musicdir}\"|g" \
        -e "s|#playlist_directory.*$|playlist_directory \"%{mpd_playlistsdir}\"|g" \
        -e "s|#db_file.*$|db_file \"%{mpd_dbfile}\"|g" \
        -e "s|#log_file.*$|log_file \"%{mpd_logfile}\"|g" \
        -e "s|#state_file.*$|state_file \"%{mpd_statefile}\"|g" \
        -e 's|#user.*$|user "mpd"|g' \
-       $RPM_BUILD_ROOT%{mpd_configfile}
+       %buildroot%{mpd_configfile}
 
-rm -rf $RPM_BUILD_ROOT%{_docdir}/%{name}/
+rm -rf %buildroot%{_docdir}/%{name}/
 
 
 %pre
@@ -202,6 +202,10 @@ fi
 
 
 %changelog
+* Thu Oct 25 2018 Leigh Scott <leigh123linux@googlemail.com> - 1:0.20.22-1
+- Update to 0.20.22
+- Switch buildroot macro
+
 * Wed Oct 17 2018 Leigh Scott <leigh123linux@googlemail.com> - 1:0.20.21-1
 - Update to 0.20.21
 - Remove Group tag
