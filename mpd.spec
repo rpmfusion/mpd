@@ -17,10 +17,9 @@
 Name:           mpd
 Epoch:          1
 Version:        0.19.21
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
-Group:          Applications/Multimedia
 URL:            http://www.musicpd.org/
 
 Source0:        http://www.musicpd.org/download/mpd/0.19/mpd-%{version}.tar.xz
@@ -105,10 +104,10 @@ sed -i -e 's@libsystemd-daemon@libsystemd@g' configure.ac
     --enable-systemd-daemon \
     --enable-zzip \
     --enable-soxr
-make %{?_smp_mflags}
+%make_build
 
 %install
-make install DESTDIR=$RPM_BUILD_ROOT
+%make_install
 
 install -p -D -m 0644 %{SOURCE2} \
     $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/mpd
@@ -159,7 +158,8 @@ fi
 
 
 %files
-%doc AUTHORS COPYING README
+%doc AUTHORS README
+%license COPYING
 %{_bindir}/%{name}
 %{_mandir}/man1/mpd.1*
 %{_mandir}/man5/mpd.conf.5*
@@ -181,6 +181,10 @@ fi
 
 
 %changelog
+* Fri Nov 23 2018 Antonio Trande <sagitter@fedoraproject.org> - 1:0.19.21-2
+- Rebuild for ffmpeg-3.4.5 on el7
+- Rebuild for x264-0.148 on el7
+
 * Mon May 22 2017 Nicolas Chauvet <kwizart@gmail.com> - 1:0.19.21-1
 - Update to 0.19.21
 
