@@ -16,14 +16,14 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.20.22
+Version:        0.21.4
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
 
-Source0:        %{url}/download/mpd/0.20/mpd-%{version}.tar.xz
-Source1:        %{url}/download/mpd/0.20/mpd-%{version}.tar.xz.sig
+Source0:        %{url}/download/mpd/0.21/mpd-%{version}.tar.xz
+Source1:        %{url}/download/mpd/0.21/mpd-%{version}.tar.xz.sig
 # Note that the 0.18.x branch doesn't yet work with Fedora's version of
 # libmpcdec which needs updating.
 # https://bugzilla.redhat.com/show_bug.cgi?id=1014468
@@ -35,7 +35,7 @@ Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
 
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
-BuildRequires:     autoconf
+BuildRequires:     meson
 BuildRequires:     boost-devel
 BuildRequires:     bzip2-devel
 BuildRequires:     faad2-devel
@@ -47,6 +47,7 @@ BuildRequires:     lame-devel
 BuildRequires:     libao-devel
 BuildRequires:     libcdio-paranoia-devel
 BuildRequires:     libcurl-devel
+BuildRequires:     libgcrypt-devel
 BuildRequires:     libid3tag-devel
 BuildRequires:     libmad-devel
 BuildRequires:     libmms-devel
@@ -65,6 +66,7 @@ BuildRequires:     libsndfile-devel
 BuildRequires:     libupnp-devel
 BuildRequires:     mpg123-devel
 BuildRequires:     openal-soft-devel
+BuildRequires:     python2-sphinx
 BuildRequires:     twolame-devel
 BuildRequires:     wildmidi-devel
 # Need new version with SV8
@@ -105,29 +107,25 @@ browsing and playing your MPD music collection.
 %setup -q -n %{name}-%{version}
 %patch0 -p0
 %patch1 -p1
-# There is no libsystemd-daemon in F25
-sed -i -e 's@libsystemd-daemon@libsystemd@g' configure.ac
-sed -i -e 's@ -lresid-builder@@g' configure.ac
-NOCONFIGURE=1 ./autogen.sh
 
 %build
-%{configure} \
-    --with-systemdsystemunitdir=%{_unitdir} \
-    --with-systemduserunitdir=%{_userunitdir} \
-    --enable-bzip2 \
-    --enable-soundcloud \
-    --enable-mikmod \
-    --enable-pipe-output \
-    --disable-mpc \
-    --enable-systemd-daemon \
-    --enable-zzip \
-    --enable-soxr \
-    --enable-sidplay
+%{meson} \
+    -Dsystemd_system_unit_dir=%{_unitdir} \
+    -Dsystemd_user_unit_dir=%{_userunitdir} \
+    -Dipv6=enabled \
+    -Dpipe=true \
+    -Ddocumentation=true \
+    -Dsolaris_output=disabled \
+    -Dsndio=disabled \
+    -Dchromaprint=disabled \
+    -Dgme=disabled \
+    -Dmpcdec=disabled \
+    -Dshine=disabled
 
-%{make_build}
+%{meson_build}
 
 %install
-%{make_install}
+%{meson_install}
 
 install -p -D -m 0644 %{SOURCE2} \
     %buildroot%{_sysconfdir}/logrotate.d/mpd
@@ -203,6 +201,10 @@ fi
 
 
 %changelog
+* Mon Jan 14 2019 Leigh Scott <leigh123linux@googlemail.com> - 1:0.21.4-1
+- Update to 0.21.4
+- Add changes for meson build
+
 * Thu Oct 25 2018 Leigh Scott <leigh123linux@googlemail.com> - 1:0.20.22-1
 - Update to 0.20.22
 - Switch buildroot macro
