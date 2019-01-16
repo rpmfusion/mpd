@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.21.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
@@ -30,6 +30,7 @@ Source1:        %{url}/download/mpd/0.21/mpd-%{version}.tar.xz.sig
 # http://bugs.musicpd.org/view.php?id=3814#bugnotes
 Source2:        mpd.logrotate
 Source3:        mpd.tmpfiles.d
+Source4:        mpd.xml
 Patch0:         mpd-0.18-mpdconf.patch
 Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
 
@@ -92,6 +93,7 @@ Requires(pre):     shadow-utils
 Requires(post):    systemd
 Requires(preun):   systemd
 Requires(postun):  systemd
+Requires:          (%{name}-firewalld = %{?epoch}:%{version}-%{release} if firewalld)
 
 %description
 Music Player Daemon (MPD) is a flexible, powerful, server-side application for
@@ -101,6 +103,15 @@ network protocol. It can be used as a desktop music player, but is also great
 for streaming music to a stereo system over a local network. There are many
 GUI and command-line applications to choose from that act as a front-end for
 browsing and playing your MPD music collection.
+
+
+%package firewalld
+Summary: FirewallD metadata file for MPD
+Requires: firewalld-filesystem
+Requires(post): firewalld-filesystem
+
+%description firewalld
+This package contains FirewallD file for MPD.
 
 
 %prep
@@ -132,6 +143,8 @@ install -p -D -m 0644 %{SOURCE2} \
 
 install -p -D -m 0644 %{SOURCE3} \
     %buildroot%{_prefix}/lib/tmpfiles.d/mpd.conf
+install -p -D -m 0644 %{SOURCE4} \
+    %buildroot%{_prefix}/lib/firewalld/services/mpd.xml
 mkdir -p %{buildroot}/run
 install -d -m 0755 %{buildroot}/%{mpd_rundir}
 
@@ -174,6 +187,9 @@ fi
 %postun
 %systemd_postun_with_restart mpd.service
 
+%post firewalld
+%firewalld_reload
+
 
 %files
 %doc AUTHORS README.md
@@ -199,8 +215,14 @@ fi
 %ghost %{mpd_logfile}
 %ghost %{mpd_statefile}
 
+%files firewalld
+%{_prefix}/lib/firewalld/services/mpd.xml
+
 
 %changelog
+* Wed Jan 16 2019 Leigh Scott <leigh123linux@googlemail.com> - 1:0.21.4-2
+- Add firewalld sub-package
+
 * Mon Jan 14 2019 Leigh Scott <leigh123linux@googlemail.com> - 1:0.21.4-1
 - Update to 0.21.4
 - Add changes for meson build
