@@ -16,8 +16,8 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.21.4
-Release:        2%{?dist}
+Version:        0.21.5
+Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
@@ -67,7 +67,7 @@ BuildRequires:     libsndfile-devel
 BuildRequires:     libupnp-devel
 BuildRequires:     mpg123-devel
 BuildRequires:     openal-soft-devel
-BuildRequires:     python2-sphinx
+BuildRequires:     python3-sphinx
 BuildRequires:     twolame-devel
 BuildRequires:     wildmidi-devel
 # Need new version with SV8
@@ -118,6 +118,8 @@ This package contains FirewallD file for MPD.
 %setup -q -n %{name}-%{version}
 %patch0 -p0
 %patch1 -p1
+# Force python3-sphinx
+sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
 
 %build
 %{meson} \
@@ -131,7 +133,8 @@ This package contains FirewallD file for MPD.
     -Dchromaprint=disabled \
     -Dgme=disabled \
     -Dmpcdec=disabled \
-    -Dshine=disabled
+    -Dshine=disabled \
+    -Dtremor=disabled
 
 %{meson_build}
 
@@ -220,6 +223,10 @@ fi
 
 
 %changelog
+* Sat Feb 23 2019 Leigh Scott <leigh123linux@googlemail.com> - 1:0.21.5-1
+- Update to 0.21.5
+- Force python3-sphinx for docs
+
 * Wed Jan 16 2019 Leigh Scott <leigh123linux@googlemail.com> - 1:0.21.4-2
 - Add firewalld sub-package
 
