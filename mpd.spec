@@ -16,8 +16,8 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.21.5
-Release:        3%{?dist}
+Version:        0.21.6
+Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
@@ -116,7 +116,7 @@ This package contains FirewallD file for MPD.
 
 
 %prep
-%setup -q -n %{name}-%{version}
+%setup -q
 %patch0 -p0
 %patch1 -p1
 # Force python3-sphinx
@@ -224,6 +224,9 @@ fi
 
 
 %changelog
+* Mon Mar 18 2019 Leigh Scott <leigh123linux@googlemail.com> - 1:0.21.6-1
+- Update to 0.21.6
+
 * Mon Mar 04 2019 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 1:0.21.5-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
