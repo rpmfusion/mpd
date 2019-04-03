@@ -33,6 +33,9 @@ Source3:        mpd.tmpfiles.d
 Source4:        mpd.xml
 Patch0:         mpd-0.18-mpdconf.patch
 Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
+# https://github.com/MusicPlayerDaemon/MPD/issues/522
+# https://github.com/MusicPlayerDaemon/MPD/commit/37b54179d882fef38ca6735b53e322027414b62e
+Patch2:         gcc-9_buildfix.patch
 
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
@@ -119,6 +122,7 @@ This package contains FirewallD file for MPD.
 %setup -q
 %patch0 -p0
 %patch1 -p1
+%patch2 -p1
 # Force python3-sphinx
 sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
 
@@ -226,6 +230,7 @@ fi
 %changelog
 * Wed Apr 03 2019 Leigh Scott <leigh123linux@googlemail.com> - 1:0.21.7-1
 - Update to 0.21.7
+- Add upstream commit to fix gcc-9 build issue
 
 * Mon Mar 18 2019 Leigh Scott <leigh123linux@googlemail.com> - 1:0.21.6-1
 - Update to 0.21.6
