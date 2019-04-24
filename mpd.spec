@@ -16,7 +16,7 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.21.7
+Version:        0.21.8
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
@@ -33,9 +33,6 @@ Source3:        mpd.tmpfiles.d
 Source4:        mpd.xml
 Patch0:         mpd-0.18-mpdconf.patch
 Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
-# https://github.com/MusicPlayerDaemon/MPD/issues/522
-# https://github.com/MusicPlayerDaemon/MPD/commit/37b54179d882fef38ca6735b53e322027414b62e
-Patch2:         gcc-9_buildfix.patch
 
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
@@ -122,7 +119,6 @@ This package contains FirewallD file for MPD.
 %setup -q
 %patch0 -p0
 %patch1 -p1
-%patch2 -p1
 # Force python3-sphinx
 sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
 
@@ -208,6 +204,7 @@ fi
 %{_unitdir}/mpd.service
 %{_unitdir}/mpd.socket
 %{_userunitdir}/mpd.service
+%{_userunitdir}/mpd.socket
 %config(noreplace) %{mpd_configfile}
 %config(noreplace) %{_sysconfdir}/logrotate.d/mpd
 %{_prefix}/lib/tmpfiles.d/mpd.conf
@@ -228,6 +225,9 @@ fi
 
 
 %changelog
+* Wed Apr 24 2019 Leigh Scott <leigh123linux@googlemail.com> - 1:0.21.8-1
+- Update to 0.21.8
+
 * Wed Apr 03 2019 Leigh Scott <leigh123linux@googlemail.com> - 1:0.21.7-1
 - Update to 0.21.7
 - Add upstream commit to fix gcc-9 build issue
