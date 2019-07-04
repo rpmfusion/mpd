@@ -16,7 +16,7 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.21.10
+Version:        0.21.11
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
@@ -94,7 +94,7 @@ Requires(pre):     shadow-utils
 Requires(post):    systemd
 Requires(preun):   systemd
 Requires(postun):  systemd
-Requires:          (%{name}-firewalld = %{?epoch}:%{version}-%{release} if firewalld)
+Requires:          (mpd-firewalld = %{?epoch}:%{version}-%{release} if firewalld)
 
 %description
 Music Player Daemon (MPD) is a flexible, powerful, server-side application for
@@ -143,33 +143,33 @@ sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
 %{meson_install}
 
 install -p -D -m 0644 %{SOURCE2} \
-    %buildroot%{_sysconfdir}/logrotate.d/mpd
+    %{buildroot}%{_sysconfdir}/logrotate.d/mpd
 
 install -p -D -m 0644 %{SOURCE3} \
-    %buildroot%{_prefix}/lib/tmpfiles.d/mpd.conf
+    %{buildroot}%{_prefix}/lib/tmpfiles.d/mpd.conf
 install -p -D -m 0644 %{SOURCE4} \
-    %buildroot%{_prefix}/lib/firewalld/services/mpd.xml
+    %{buildroot}%{_prefix}/lib/firewalld/services/mpd.xml
 mkdir -p %{buildroot}/run
 install -d -m 0755 %{buildroot}/%{mpd_rundir}
 
-mkdir -p %buildroot%{mpd_homedir}
-mkdir -p %buildroot%{mpd_logdir}
-mkdir -p %buildroot%{mpd_musicdir}
-mkdir -p %buildroot%{mpd_playlistsdir}
-touch %buildroot%{mpd_dbfile}
-touch %buildroot%{mpd_logfile}
-touch %buildroot%{mpd_statefile}
+mkdir -p %{buildroot}%{mpd_homedir}
+mkdir -p %{buildroot}%{mpd_logdir}
+mkdir -p %{buildroot}%{mpd_musicdir}
+mkdir -p %{buildroot}%{mpd_playlistsdir}
+touch %{buildroot}%{mpd_dbfile}
+touch %{buildroot}%{mpd_logfile}
+touch %{buildroot}%{mpd_statefile}
 
-install -D -p -m644 doc/mpdconf.example %buildroot%{mpd_configfile}
+install -D -p -m644 doc/mpdconf.example %{buildroot}%{mpd_configfile}
 sed -i -e "s|#music_directory.*$|music_directory \"%{mpd_musicdir}\"|g" \
        -e "s|#playlist_directory.*$|playlist_directory \"%{mpd_playlistsdir}\"|g" \
        -e "s|#db_file.*$|db_file \"%{mpd_dbfile}\"|g" \
        -e "s|#log_file.*$|log_file \"%{mpd_logfile}\"|g" \
        -e "s|#state_file.*$|state_file \"%{mpd_statefile}\"|g" \
        -e 's|#user.*$|user "mpd"|g' \
-       %buildroot%{mpd_configfile}
+       %{buildroot}%{mpd_configfile}
 
-rm -rf %buildroot%{_docdir}/%{name}/
+rm -rf %{buildroot}%{_docdir}/mpd/
 
 
 %pre
@@ -198,7 +198,7 @@ fi
 %files
 %doc AUTHORS README.md
 %license COPYING
-%{_bindir}/%{name}
+%{_bindir}/mpd
 %{_mandir}/man1/mpd.1*
 %{_mandir}/man5/mpd.conf.5*
 %{_unitdir}/mpd.service
@@ -208,7 +208,7 @@ fi
 %config(noreplace) %{mpd_configfile}
 %config(noreplace) %{_sysconfdir}/logrotate.d/mpd
 %{_prefix}/lib/tmpfiles.d/mpd.conf
-%{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
+%{_datadir}/icons/hicolor/scalable/apps/mpd.svg
 
 %defattr(-,%{mpd_user},%{mpd_group})
 %dir %{mpd_homedir}
@@ -225,6 +225,10 @@ fi
 
 
 %changelog
+* Thu Jul 04 2019 Leigh Scott <leigh123linux@googlemail.com> - 1:0.21.11-1
+- Update to 0.21.11
+- Clean up
+
 * Sat Jun 08 2019 Leigh Scott <leigh123linux@googlemail.com> - 1:0.21.10-1
 - Update to 0.21.10
 
