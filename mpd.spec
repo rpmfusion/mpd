@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.21.14
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
@@ -225,6 +225,9 @@ fi
 
 
 %changelog
+* Sat Aug 31 2019 Leigh Scott <leigh123linux@gmail.com> - 1:0.21.14-2
+- Rebuild for libsidplayfp-2.0.0 (rfbz #5374)
+
 * Thu Aug 22 2019 Leigh Scott <leigh123linux@googlemail.com> - 1:0.21.14-1
 - Update to 0.21.14
 
