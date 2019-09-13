@@ -88,7 +88,9 @@ BuildRequires:     wavpack-devel
 BuildRequires:     yajl-devel
 BuildRequires:     zlib-devel
 BuildRequires:     zziplib-devel
+%if 0%{?fedora} || 0%{?rhel} < 8
 BuildRequires:     libsidplayfp-devel
+%endif
 
 Requires(pre):     shadow-utils
 Requires(post):    systemd
