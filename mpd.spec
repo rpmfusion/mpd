@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.21.22
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
@@ -228,6 +228,9 @@ fi
 
 
 %changelog
+* Fri Apr 10 2020 Leigh Scott <leigh123linux@gmail.com> - 1:0.21.22-2
+- Rebuild for new libcdio version
+
 * Sat Apr 04 2020 leigh123linux <leigh123linux@googlemail.com> - 1:0.21.22-1
 - Update to 0.21.22
 
