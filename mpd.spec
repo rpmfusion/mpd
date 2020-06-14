@@ -24,13 +24,14 @@ URL:            https://www.musicpd.org
 
 Source0:        %{url}/download/mpd/0.21/mpd-%{version}.tar.xz
 Source1:        %{url}/download/mpd/0.21/mpd-%{version}.tar.xz.sig
+Source2:        https://pgp.key-server.io/download/0x236E8A58C6DB4512#/gpgkey.asc
 # Note that the 0.18.x branch doesn't yet work with Fedora's version of
 # libmpcdec which needs updating.
 # https://bugzilla.redhat.com/show_bug.cgi?id=1014468
 # http://bugs.musicpd.org/view.php?id=3814#bugnotes
-Source2:        mpd.logrotate
-Source3:        mpd.tmpfiles.d
-Source4:        mpd.xml
+Source3:        mpd.logrotate
+Source4:        mpd.tmpfiles.d
+Source5:        mpd.xml
 Patch0:         mpd-0.18-mpdconf.patch
 Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
 
@@ -44,6 +45,7 @@ BuildRequires:     ffmpeg-devel
 BuildRequires:     firewalld-filesystem
 BuildRequires:     flac-devel
 BuildRequires:     gcc
+BuildRequires:     gnupg2
 BuildRequires:     jack-audio-connection-kit-devel
 BuildRequires:     lame-devel
 BuildRequires:     libao-devel
@@ -116,6 +118,7 @@ This package contains FirewallD file for MPD.
 
 
 %prep
+%{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
 %setup -q
 %patch0 -p0
 %patch1 -p1
@@ -145,12 +148,12 @@ sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
 %install
 %{meson_install}
 
-install -p -D -m 0644 %{SOURCE2} \
+install -p -D -m 0644 %{SOURCE3} \
     %{buildroot}%{_sysconfdir}/logrotate.d/mpd
 
-install -p -D -m 0644 %{SOURCE3} \
-    %{buildroot}%{_prefix}/lib/tmpfiles.d/mpd.conf
 install -p -D -m 0644 %{SOURCE4} \
+    %{buildroot}%{_prefix}/lib/tmpfiles.d/mpd.conf
+install -p -D -m 0644 %{SOURCE5} \
     %{buildroot}%{_prefix}/lib/firewalld/services/mpd.xml
 mkdir -p %{buildroot}/run
 install -d -m 0755 %{buildroot}/%{mpd_rundir}
