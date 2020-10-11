@@ -16,14 +16,14 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.21.26
+Version:        0.22
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
 
-Source0:        %{url}/download/mpd/0.21/mpd-%{version}.tar.xz
-Source1:        %{url}/download/mpd/0.21/mpd-%{version}.tar.xz.sig
+Source0:        %{url}/download/mpd/0.22/mpd-%{version}.tar.xz
+Source1:        %{url}/download/mpd/0.22/mpd-%{version}.tar.xz.sig
 Source2:        https://pgp.key-server.io/download/0x236E8A58C6DB4512#/gpgkey.asc
 # Note that the 0.18.x branch doesn't yet work with Fedora's version of
 # libmpcdec which needs updating.
@@ -32,7 +32,7 @@ Source2:        https://pgp.key-server.io/download/0x236E8A58C6DB4512#/gpgkey.as
 Source3:        mpd.logrotate
 Source4:        mpd.tmpfiles.d
 Source5:        mpd.xml
-Patch0:         mpd-0.18-mpdconf.patch
+Patch0:         mpd-0.22-mpdconf.patch
 Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
 
 BuildRequires:     alsa-lib-devel
@@ -68,6 +68,7 @@ BuildRequires:     libnfs-devel
 BuildRequires:     libsmbclient-devel
 BuildRequires:     libsndfile-devel
 BuildRequires:     libupnp-devel
+BuildRequires:     liburing-devel
 BuildRequires:     mpg123-devel
 BuildRequires:     openal-soft-devel
 BuildRequires:     python3-sphinx
@@ -120,7 +121,7 @@ This package contains FirewallD file for MPD.
 %prep
 %{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
 %setup -q
-%patch0 -p0
+%patch0 -p1
 %patch1 -p1
 # Force python3-sphinx
 sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
@@ -131,7 +132,7 @@ sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
     -Dsystemd_user_unit_dir=%{_userunitdir} \
     -Dipv6=enabled \
     -Dpipe=true \
-    -Ddocumentation=true \
+    -Ddocumentation=auto \
     -Dsolaris_output=disabled \
     -Dsndio=disabled \
     -Dchromaprint=disabled \
@@ -231,6 +232,9 @@ fi
 
 
 %changelog
+* Sun Oct 11 2020 Leigh Scott <leigh123linux@gmail.com> - 1:0.22-1
+- Update to 0.22
+
 * Wed Sep 23 2020 Leigh Scott <leigh123linux@gmail.com> - 1:0.21.26-1
 - Update to 0.21.26
 

@@ -1,7 +1,6 @@
-diff -ur ../mpd.orig/doc/mpdconf.example ./doc/mpdconf.example
---- ../mpd.orig/doc/mpdconf.example	2013-10-02 15:01:57.711017087 +1000
-+++ ./doc/mpdconf.example	2013-10-02 15:02:59.995519905 +1000
-@@ -81,7 +81,7 @@
+--- a/doc/mpdconf.example
++++ b/doc/mpdconf.example
+@@ -82,7 +82,7 @@
  #bind_to_address		"any"
  #
  # And for Unix Socket
@@ -10,7 +9,7 @@ diff -ur ../mpd.orig/doc/mpdconf.example ./doc/mpdconf.example
  #
  # This setting is the TCP port that is desired for the daemon to get assigned
  # to.
-@@ -274,12 +274,12 @@
+@@ -273,13 +273,13 @@
  #
  # An example of a pulseaudio output (streaming to a remote pulseaudio server)
  #
@@ -22,8 +21,10 @@ diff -ur ../mpd.orig/doc/mpdconf.example ./doc/mpdconf.example
 +	name		"My Pulse Output"
  ##	server		"remote_server"		# optional
  ##	sink		"remote_server_sink"	# optional
+ ##	media_role	"media_role"		#optional
 -#}
 +}
  #
  # An example of a winmm output (Windows multimedia API).
  #
+
