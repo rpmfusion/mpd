@@ -68,7 +68,9 @@ BuildRequires:     libnfs-devel
 BuildRequires:     libsmbclient-devel
 BuildRequires:     libsndfile-devel
 BuildRequires:     libupnp-devel
+%ifnarch %{arm}
 BuildRequires:     liburing-devel
+%endif
 BuildRequires:     mpg123-devel
 BuildRequires:     openal-soft-devel
 BuildRequires:     python3-sphinx
