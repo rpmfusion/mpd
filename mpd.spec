@@ -134,6 +134,9 @@ sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
     -Dsystemd_user_unit_dir=%{_userunitdir} \
     -Dipv6=enabled \
     -Dpipe=true \
+%ifarch %{arm}
+    -Dio_uring=disabled \
+%endif
     -Ddocumentation=auto \
     -Dsolaris_output=disabled \
     -Dsndio=disabled \
