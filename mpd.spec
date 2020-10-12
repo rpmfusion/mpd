@@ -68,8 +68,10 @@ BuildRequires:     libnfs-devel
 BuildRequires:     libsmbclient-devel
 BuildRequires:     libsndfile-devel
 BuildRequires:     libupnp-devel
+%if 0%{?fedora}
 %ifnarch %{arm}
 BuildRequires:     liburing-devel
+%endif
 %endif
 BuildRequires:     mpg123-devel
 BuildRequires:     openal-soft-devel
@@ -134,8 +136,10 @@ sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
     -Dsystemd_user_unit_dir=%{_userunitdir} \
     -Dipv6=enabled \
     -Dpipe=true \
+%if 0%{?fedora}
 %ifarch %{arm}
     -Dio_uring=disabled \
+%endif
 %endif
     -Ddocumentation=auto \
     -Dsolaris_output=disabled \
