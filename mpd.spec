@@ -136,8 +136,10 @@ sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
     -Dsystemd_user_unit_dir=%{_userunitdir} \
     -Dipv6=enabled \
     -Dpipe=true \
-%if 0%{?fedora}
 %ifarch %{arm}
+    -Dio_uring=disabled \
+%else
+%if 0%{?rhel}
     -Dio_uring=disabled \
 %endif
 %endif
