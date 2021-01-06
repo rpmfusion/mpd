@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.22.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
@@ -56,7 +56,6 @@ BuildRequires:     libid3tag-devel
 BuildRequires:     libmad-devel
 BuildRequires:     libmms-devel
 BuildRequires:     libmodplug-devel
-BuildRequires:     adplug-devel
 BuildRequires:     avahi-glib-devel
 BuildRequires:     avahi-compat-libdns_sd-devel
 BuildRequires:     avahi-devel
@@ -134,6 +133,7 @@ sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
 %{meson} \
     -Dsystemd_system_unit_dir=%{_unitdir} \
     -Dsystemd_user_unit_dir=%{_userunitdir} \
+    -Dadplug=disabled \
     -Dipv6=enabled \
     -Dpipe=true \
 %ifarch %{arm}
@@ -243,6 +243,9 @@ fi
 
 
 %changelog
+* Wed Jan  6 2021 Leigh Scott <leigh123linux@gmail.com> - 1:0.22.3-3
+- Disable adplug support
+
 * Thu Dec 31 2020 Leigh Scott <leigh123linux@gmail.com> - 1:0.22.3-2
 - Rebuilt for new ffmpeg snapshot
 
