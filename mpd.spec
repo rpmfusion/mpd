@@ -146,6 +146,7 @@ sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
     -Dsolaris_output=disabled \
     -Dsndio=disabled \
     -Dchromaprint=disabled \
+    -Dfluidsynth=disabled \
     -Dgme=disabled \
     -Dmpcdec=disabled \
     -Dshine=disabled \
