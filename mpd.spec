@@ -16,8 +16,8 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.22.8
-Release:        2%{?dist}
+Version:        0.22.9
+Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
@@ -243,6 +243,9 @@ fi
 
 
 %changelog
+* Wed Jun 23 2021 Leigh Scott <leigh123linux@gmail.com> - 1:0.22.9-1
+- Update to 0.22.9
+
 * Tue Jun 08 2021 Leigh Scott <leigh123linux@gmail.com> - 1:0.22.8-2
 - Drop fluidsynth support due to poor fedora maintenance (.so bumps to stable releases)
 
