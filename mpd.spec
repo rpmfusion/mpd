@@ -150,9 +150,6 @@ sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
     -Dgme=disabled \
     -Dmpcdec=disabled \
     -Dshine=disabled \
-%if 0%{?rhel} > 7
-    -Dsidplay=disabled \
-%endif
     -Dtremor=disabled
 
 %{meson_build}
