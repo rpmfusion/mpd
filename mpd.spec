@@ -16,14 +16,14 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.22.11
+Version:        0.23
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
 
-Source0:        %{url}/download/mpd/0.22/mpd-%{version}.tar.xz
-Source1:        %{url}/download/mpd/0.22/mpd-%{version}.tar.xz.sig
+Source0:        %{url}/download/mpd/0.23/mpd-%{version}.tar.xz
+Source1:        %{url}/download/mpd/0.23/mpd-%{version}.tar.xz.sig
 Source2:        https://pgp.key-server.io/download/0x236E8A58C6DB4512#/gpgkey.asc
 # Note that the 0.18.x branch doesn't yet work with Fedora's version of
 # libmpcdec which needs updating.
@@ -44,6 +44,7 @@ BuildRequires:     faad2-devel
 BuildRequires:     ffmpeg-devel
 BuildRequires:     firewalld-filesystem
 BuildRequires:     flac-devel
+BuildRequires:     fmt-devel
 BuildRequires:     gcc
 BuildRequires:     gnupg2
 BuildRequires:     jack-audio-connection-kit-devel
@@ -63,10 +64,12 @@ BuildRequires:     dbus-devel
 BuildRequires:     expat-devel
 BuildRequires:     libmpdclient-devel
 BuildRequires:     libnfs-devel
+BuildRequires:     libopenmpt-devel
 BuildRequires:     libsmbclient-devel
 BuildRequires:     libsndfile-devel
 BuildRequires:     libupnp-devel
 %if 0%{?fedora}
+BuildRequires:     pipewire-devel > 0.3
 %ifnarch %{arm}
 BuildRequires:     liburing-devel
 %endif
@@ -140,6 +143,7 @@ sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
 %else
 %if 0%{?rhel}
     -Dio_uring=disabled \
+    -Dpipewire=disabled \
 %endif
 %endif
     -Ddocumentation=auto \
@@ -240,6 +244,9 @@ fi
 
 
 %changelog
+* Thu Oct 14 2021 Leigh Scott <leigh123linux@gmail.com> - 1:0.23-1
+- Update to 0.23
+
 * Fri Aug 27 2021 Leigh Scott <leigh123linux@gmail.com> - 1:0.22.11-1
 - Update to 0.22.11
 
