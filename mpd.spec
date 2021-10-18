@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.23
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
@@ -34,6 +34,8 @@ Source4:        mpd.tmpfiles.d
 Source5:        mpd.xml
 Patch0:         mpd-0.22-mpdconf.patch
 Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
+# https://github.com/MusicPlayerDaemon/MPD/commit/d5be8c74b009cdfc16b2b637aa9c4edb11cf105d
+Patch2:         pipewire_samplerate.patch
 
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
@@ -128,6 +130,7 @@ This package contains FirewallD file for MPD.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 # Force python3-sphinx
 sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
 
@@ -244,6 +247,9 @@ fi
 
 
 %changelog
+* Mon Oct 18 2021 Leigh Scott <leigh123linux@gmail.com> - 1:0.23-2
+- Fix pipewire samplerate
+
 * Thu Oct 14 2021 Leigh Scott <leigh123linux@gmail.com> - 1:0.23-1
 - Update to 0.23
 

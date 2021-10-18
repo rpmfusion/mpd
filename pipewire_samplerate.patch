@@ -1,0 +1,30 @@
+From d5be8c74b009cdfc16b2b637aa9c4edb11cf105d Mon Sep 17 00:00:00 2001
+From: Max Kellermann <max@musicpd.org>
+Date: Mon, 18 Oct 2021 16:45:21 +0200
+Subject: [PATCH] output/pipewire: attempt to change the graph sample rate
+
+Requires PipeWire 0.3.32.
+
+Closes https://github.com/MusicPlayerDaemon/MPD/issues/1283
+---
+ src/output/plugins/PipeWireOutputPlugin.cxx | 7 +++++++
+ 1 files changed, 7 insertions(+)
+
+diff --git a/src/output/plugins/PipeWireOutputPlugin.cxx b/src/output/plugins/PipeWireOutputPlugin.cxx
+index 6579c93b6..db7c36823 100644
+--- a/src/output/plugins/PipeWireOutputPlugin.cxx
++++ b/src/output/plugins/PipeWireOutputPlugin.cxx
+@@ -383,6 +383,13 @@ PipeWireOutput::Open(AudioFormat &audio_format)
+ 	if (target != nullptr && target_id == PW_ID_ANY)
+ 		pw_properties_setf(props, PW_KEY_NODE_TARGET, "%s", target);
+ 
++#ifdef PW_KEY_NODE_RATE
++	/* ask PipeWire to change the graph sample rate to ours
++	   (requires PipeWire 0.3.32) */
++	pw_properties_setf(props, PW_KEY_NODE_RATE, "1/%u",
++			   audio_format.sample_rate);
++#endif
++
+ 	const PipeWire::ThreadLoopLock lock(thread_loop);
+ 
+ 	stream = pw_stream_new_simple(pw_thread_loop_get_loop(thread_loop),
