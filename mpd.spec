@@ -91,7 +91,6 @@ BuildRequires:     pkgconfig(libpulse)
 BuildRequires:     soxr-devel
 BuildRequires:     sqlite-devel
 BuildRequires:     systemd-devel
-BuildRequires:     systemd-rpm-macros
 BuildRequires:     wavpack-devel
 BuildRequires:     yajl-devel
 BuildRequires:     zlib-devel
@@ -99,8 +98,10 @@ BuildRequires:     zziplib-devel
 BuildRequires:     libsidplayfp-devel
 
 Requires(pre):     shadow-utils
+Requires(post):    systemd
+Requires(preun):   systemd
+Requires(postun):  systemd
 Requires:          (mpd-firewalld = %{?epoch}:%{version}-%{release} if firewalld)
-%{systemd_requires}
 
 %description
 Music Player Daemon (MPD) is a flexible, powerful, server-side application for
