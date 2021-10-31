@@ -65,7 +65,6 @@ BuildRequires:     expat-devel
 BuildRequires:     libmpdclient-devel
 BuildRequires:     libnfs-devel
 BuildRequires:     libopenmpt-devel
-BuildRequires:     libsmbclient-devel
 BuildRequires:     libsndfile-devel
 BuildRequires:     libupnp-devel
 %if 0%{?fedora}
