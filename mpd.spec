@@ -91,6 +91,7 @@ BuildRequires:     pkgconfig(libpulse)
 BuildRequires:     soxr-devel
 BuildRequires:     sqlite-devel
 BuildRequires:     systemd-devel
+BuildRequires:     systemd-rpm-macros
 BuildRequires:     wavpack-devel
 BuildRequires:     yajl-devel
 BuildRequires:     zlib-devel
