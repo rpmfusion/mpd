@@ -34,6 +34,7 @@ Source4:        mpd.tmpfiles.d
 Source5:        mpd.xml
 Patch0:         mpd-0.22-mpdconf.patch
 Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
+Patch2:         ffmpeg45.patch
 
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
@@ -127,6 +128,7 @@ This package contains FirewallD file for MPD.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 # Force python3-sphinx
 sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
 
