@@ -129,6 +129,11 @@ This package contains FirewallD file for MPD.
 # Force python3-sphinx
 sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
 
+# redhat meson is too old
+%if 0%{?rhel}
+sed -i -e 's@>= 0.56.0@>= 0.55.0@g'  meson.build
+%endif
+
 %build
 %{meson} \
     -Dsystemd_system_unit_dir=%{_unitdir} \
