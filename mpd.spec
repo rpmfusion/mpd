@@ -16,8 +16,8 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.23.3
-Release:        2%{?dist}
+Version:        0.23.4
+Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
@@ -34,7 +34,6 @@ Source4:        mpd.tmpfiles.d
 Source5:        mpd.xml
 Patch0:         mpd-0.22-mpdconf.patch
 Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
-Patch2:         ffmpeg45.patch
 
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
@@ -125,10 +124,8 @@ This package contains FirewallD file for MPD.
 
 %prep
 %{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
-%setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
+%autosetup -p1
+
 # Force python3-sphinx
 sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
 
@@ -245,6 +242,9 @@ fi
 
 
 %changelog
+* Tue Nov 16 2021 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.4-1
+- Update to 0.23.4
+
 * Tue Nov 09 2021 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.3-2
 - Rebuilt for new ffmpeg snapshot
 
