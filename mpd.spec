@@ -87,6 +87,7 @@ BuildRequires:     libshout-devel
 BuildRequires:     libvorbis-devel
 BuildRequires:     mikmod-devel
 BuildRequires:     opus-devel
+BuildRequires:     pcre2-devel
 BuildRequires:     pkgconfig(libpulse)
 BuildRequires:     soxr-devel
 BuildRequires:     sqlite-devel
