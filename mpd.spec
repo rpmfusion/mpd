@@ -1,4 +1,5 @@
 %global  _hardened_build     1
+%undefine _package_note_file
 
 %global  mpd_user            mpd
 %global  mpd_group           %{mpd_user}
