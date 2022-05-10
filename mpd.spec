@@ -149,6 +149,7 @@ sed -i -e 's@>= 0.56.0@>= 0.55.0@g'  meson.build
 %if 0%{?rhel}
     -Dio_uring=disabled \
     -Dpipewire=disabled \
+    -Dshout=disabled \
 %endif
 %endif
     -Ddocumentation=auto \
