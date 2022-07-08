@@ -1,0 +1,11 @@
+--- a/src/decoder/plugins/WildmidiDecoderPlugin.cxx	2022-05-09 22:04:30.000000000 +0100
++++ b/src/decoder/plugins/WildmidiDecoderPlugin.cxx	2022-07-08 07:36:36.238697592 +0100
+@@ -45,7 +45,7 @@ wildmidi_init(const ConfigBlock &block)
+ {
+ 	const AllocatedPath path =
+ 		block.GetPath("config_file",
+-			      "/etc/timidity/timidity.cfg");
++			      "/etc/timidity.cfg");
+ 
+ 	if (!FileExists(path)) {
+ 		const auto utf8 = path.ToUTF8();

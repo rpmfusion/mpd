@@ -34,6 +34,7 @@ Source4:        mpd.tmpfiles.d
 Source5:        mpd.xml
 Patch0:         mpd-0.22-mpdconf.patch
 Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
+Patch2:         timidity_path.patch
 
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
