@@ -16,7 +16,7 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.23.7
+Version:        0.23.8
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
@@ -58,11 +58,11 @@ BuildRequires:     libid3tag-devel
 BuildRequires:     libmad-devel
 BuildRequires:     libmms-devel
 BuildRequires:     libmodplug-devel
-BuildRequires:     avahi-glib-devel
 BuildRequires:     avahi-compat-libdns_sd-devel
 BuildRequires:     avahi-devel
 BuildRequires:     dbus-devel
 BuildRequires:     expat-devel
+BuildRequires:     fluidsynth-devel
 BuildRequires:     libmpdclient-devel
 BuildRequires:     libnfs-devel
 BuildRequires:     libopenmpt-devel
@@ -85,6 +85,7 @@ BuildRequires:     wildmidi-devel
 BuildRequires:     libogg-devel
 BuildRequires:     libsamplerate-devel
 BuildRequires:     libshout-devel
+BuildRequires:     libsidplayfp-devel
 BuildRequires:     libvorbis-devel
 BuildRequires:     mikmod-devel
 BuildRequires:     opus-devel
@@ -97,7 +98,6 @@ BuildRequires:     wavpack-devel
 BuildRequires:     yajl-devel
 BuildRequires:     zlib-devel
 BuildRequires:     zziplib-devel
-BuildRequires:     libsidplayfp-devel
 
 Requires(pre):     shadow-utils
 Requires(post):    systemd
@@ -157,7 +157,6 @@ sed -i -e 's@>= 0.56.0@>= 0.55.0@g'  meson.build
     -Dsolaris_output=disabled \
     -Dsndio=disabled \
     -Dchromaprint=disabled \
-    -Dfluidsynth=disabled \
     -Dgme=disabled \
     -Dmpcdec=disabled \
     -Dshine=disabled \
@@ -251,6 +250,9 @@ fi
 
 
 %changelog
+* Sat Jul 09 2022 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.8-1
+- Update to 0.23.8
+
 * Tue May 10 2022 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.7-1
 - Update to 0.23.7
 
