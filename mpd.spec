@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.23.8
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
@@ -250,6 +250,9 @@ fi
 
 
 %changelog
+* Fri Jul 22 2022 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.8-2
+- Rebuild for new ffmpeg
+
 * Sat Jul 09 2022 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.8-1
 - Update to 0.23.8
 
