@@ -35,6 +35,7 @@ Source5:        mpd.xml
 Patch0:         mpd-0.22-mpdconf.patch
 Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
 Patch2:         timidity_path.patch
+Patch3:         https://github.com/MusicPlayerDaemon/MPD/commit/59792cb0b801854ee41be72d33db9542735df754.patch#/ffmpeg51.patch
 
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
