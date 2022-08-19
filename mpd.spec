@@ -16,8 +16,8 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.23.8
-Release:        2%{?dist}
+Version:        0.23.9
+Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
@@ -35,8 +35,6 @@ Source5:        mpd.xml
 Patch0:         mpd-0.22-mpdconf.patch
 Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
 Patch2:         timidity_path.patch
-# https://github.com/MusicPlayerDaemon/MPD/commit/59792cb0b801854ee41be72d33db9542735df754
-Patch3:         ffmpeg51.patch
 
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
@@ -252,6 +250,9 @@ fi
 
 
 %changelog
+* Fri Aug 19 2022 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.9-1
+- Update to 0.23.9
+
 * Fri Jul 22 2022 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.8-2
 - Rebuild for new ffmpeg
 
