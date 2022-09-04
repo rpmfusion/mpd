@@ -104,7 +104,7 @@ Requires(post):    systemd
 Requires(preun):   systemd
 Requires(postun):  systemd
 Requires:          (mpd-firewalld = %{?epoch}:%{version}-%{release} if firewalld)
-Requires:          ffmpeg-libs
+Requires:          ffmpeg-libs%{?_isa}
 
 %description
 Music Player Daemon (MPD) is a flexible, powerful, server-side application for
