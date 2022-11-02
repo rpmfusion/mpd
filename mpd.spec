@@ -63,11 +63,15 @@ BuildRequires:     avahi-devel
 BuildRequires:     dbus-devel
 BuildRequires:     expat-devel
 BuildRequires:     fluidsynth-devel
-BuildRequires:     libmpdclient-devel
-BuildRequires:     libnfs-devel
 BuildRequires:     libopenmpt-devel
 BuildRequires:     libsndfile-devel
 BuildRequires:     libupnp-devel
+%if 0%{?fedora} || 0%{?rhel} <= 8
+BuildRequires:     libmpdclient-devel
+BuildRequires:     libnfs-devel
+BuildRequires:     mikmod-devel
+BuildRequires:     wildmidi-devel
+%endif
 %if 0%{?fedora}
 BuildRequires:     pipewire-devel > 0.3
 %ifnarch %{arm}
@@ -78,7 +82,6 @@ BuildRequires:     mpg123-devel
 BuildRequires:     openal-soft-devel
 BuildRequires:     python3-sphinx
 BuildRequires:     twolame-devel
-BuildRequires:     wildmidi-devel
 # Need new version with SV8
 # BuildRequires:     libmpcdec-devel
 
@@ -87,7 +90,6 @@ BuildRequires:     libsamplerate-devel
 BuildRequires:     libshout-devel
 BuildRequires:     libsidplayfp-devel
 BuildRequires:     libvorbis-devel
-BuildRequires:     mikmod-devel
 BuildRequires:     opus-devel
 BuildRequires:     pcre2-devel
 BuildRequires:     pkgconfig(libpulse)
@@ -146,12 +148,17 @@ sed -i -e 's@>= 0.56.0@>= 0.55.0@g'  meson.build
     -Dpipe=true \
 %ifarch %{arm}
     -Dio_uring=disabled \
-%else
+%endif
 %if 0%{?rhel}
     -Dio_uring=disabled \
+%if 0%{?rhel} > 8
+    -Dlibmpdclient=disabled \
+    -Dmikmod=disabled \
+    -Dnfs=disabled \
+    -Dwildmidi=disabled \
+%endif
     -Dpipewire=disabled \
     -Dshout=disabled \
-%endif
 %endif
     -Ddocumentation=auto \
     -Dsolaris_output=disabled \
