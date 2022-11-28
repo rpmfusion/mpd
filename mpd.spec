@@ -16,7 +16,7 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.23.10
+Version:        0.23.11
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
@@ -257,6 +257,9 @@ fi
 
 
 %changelog
+* Mon Nov 28 2022 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.11-1
+- Update to 0.23.11
+
 * Fri Oct 14 2022 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.10-1
 - Update to 0.23.10
 
