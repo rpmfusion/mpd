@@ -32,7 +32,7 @@ Source2:        https://pgp.key-server.io/download/0x236E8A58C6DB4512#/gpgkey.as
 Source3:        mpd.logrotate
 Source4:        mpd.tmpfiles.d
 Source5:        mpd.xml
-Patch0:         mpd-0.22-mpdconf.patch
+Patch0:         mpd-0.23-mpdconf.patch
 Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
 Patch2:         timidity_path.patch
 
@@ -193,13 +193,6 @@ touch %{buildroot}%{mpd_logfile}
 touch %{buildroot}%{mpd_statefile}
 
 install -D -p -m644 doc/mpdconf.example %{buildroot}%{mpd_configfile}
-sed -i -e "s|#music_directory.*$|music_directory \"%{mpd_musicdir}\"|g" \
-       -e "s|#playlist_directory.*$|playlist_directory \"%{mpd_playlistsdir}\"|g" \
-       -e "s|#db_file.*$|db_file \"%{mpd_dbfile}\"|g" \
-       -e "s|#log_file.*$|log_file \"%{mpd_logfile}\"|g" \
-       -e "s|#state_file.*$|state_file \"%{mpd_statefile}\"|g" \
-       -e 's|#user.*$|user "mpd"|g' \
-       %{buildroot}%{mpd_configfile}
 
 rm -rf %{buildroot}%{_docdir}/mpd/
 
