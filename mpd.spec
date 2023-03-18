@@ -82,8 +82,10 @@ BuildRequires:     mpg123-devel
 BuildRequires:     openal-soft-devel
 BuildRequires:     python3-sphinx
 BuildRequires:     twolame-devel
+%if 0%{?fedora} && 0%{?fedora} >= 38
 # Need new version with SV8
-# BuildRequires:     libmpcdec-devel
+BuildRequires:     libmpcdec-devel
+%endif
 
 BuildRequires:     libogg-devel
 BuildRequires:     libsamplerate-devel
@@ -165,7 +167,9 @@ sed -i -e 's@>= 0.56.0@>= 0.55.0@g'  meson.build
     -Dsndio=disabled \
     -Dchromaprint=disabled \
     -Dgme=disabled \
+%if 0%{?fedora} && 0%{?fedora} < 38
     -Dmpcdec=disabled \
+%endif
     -Dshine=disabled \
     -Dtremor=disabled
 
