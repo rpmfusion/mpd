@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.23.12
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
@@ -32,6 +32,7 @@ Source2:        https://pgp.key-server.io/download/0x236E8A58C6DB4512#/gpgkey.as
 Source3:        mpd.logrotate
 Source4:        mpd.tmpfiles.d
 Source5:        mpd.xml
+Source6:        mpd.sysusers
 Patch0:         mpd-0.23-mpdconf.patch
 Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
 Patch2:         timidity_path.patch
@@ -103,7 +104,7 @@ BuildRequires:     yajl-devel
 BuildRequires:     zlib-devel
 BuildRequires:     zziplib-devel
 
-Requires(pre):     shadow-utils
+Requires(pre):     systemd
 Requires(post):    systemd
 Requires(preun):   systemd
 Requires(postun):  systemd
@@ -185,6 +186,8 @@ install -p -D -m 0644 %{SOURCE4} \
     %{buildroot}%{_prefix}/lib/tmpfiles.d/mpd.conf
 install -p -D -m 0644 %{SOURCE5} \
     %{buildroot}%{_prefix}/lib/firewalld/services/mpd.xml
+install -p -D -m 0644 %{SOURCE6} \
+    %{buildroot}%{_sysusersdir}/mpd.conf
 mkdir -p %{buildroot}/run
 install -d -m 0755 %{buildroot}/%{mpd_rundir}
 
@@ -202,14 +205,7 @@ rm -rf %{buildroot}%{_docdir}/mpd/
 
 
 %pre
-if [ $1 -eq 1 ]; then
-    getent group %{mpd_group} >/dev/null || groupadd -r %{mpd_group}
-    getent passwd %{mpd_user} >/dev/null || \
-        useradd -r -g %{mpd_group} -d %{mpd_homedir} \
-            -s /sbin/nologin -c "Music Player Daemon" %{mpd_user}
-    gpasswd -a %{mpd_group} audio || :
-    exit 0
-fi
+%sysusers_create_compat %{SOURCE6}
 
 %post
 %systemd_post mpd.service
@@ -234,6 +230,7 @@ fi
 %{_unitdir}/mpd.socket
 %{_userunitdir}/mpd.service
 %{_userunitdir}/mpd.socket
+%{_sysusersdir}/mpd.conf
 %config(noreplace) %{mpd_configfile}
 %config(noreplace) %{_sysconfdir}/logrotate.d/mpd
 %{_prefix}/lib/tmpfiles.d/mpd.conf
@@ -254,6 +251,9 @@ fi
 
 
 %changelog
+* Sat Mar 25 2023 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.12-3
+- Use systemd sysusers config to create user and group
+
 * Tue Feb 28 2023 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.12-2
 - Rebuild for new ffmpeg
 
