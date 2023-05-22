@@ -75,9 +75,7 @@ BuildRequires:     wildmidi-devel
 %endif
 %if 0%{?fedora}
 BuildRequires:     pipewire-devel > 0.3
-%ifnarch %{arm}
 BuildRequires:     liburing-devel
-%endif
 %endif
 BuildRequires:     mpg123-devel
 BuildRequires:     openal-soft-devel
@@ -147,9 +145,6 @@ sed -i -e 's@>= 0.56.0@>= 0.55.0@g'  meson.build
     -Dadplug=disabled \
     -Dipv6=enabled \
     -Dpipe=true \
-%ifarch %{arm}
-    -Dio_uring=disabled \
-%endif
 %if 0%{?rhel}
     -Dio_uring=disabled \
 %if 0%{?rhel} > 8
