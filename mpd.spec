@@ -16,8 +16,8 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.23.12
-Release:        3%{?dist}
+Version:        0.23.13
+Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
@@ -104,10 +104,8 @@ BuildRequires:     yajl-devel
 BuildRequires:     zlib-devel
 BuildRequires:     zziplib-devel
 
-Requires(pre):     systemd
-Requires(post):    systemd
-Requires(preun):   systemd
-Requires(postun):  systemd
+%{?systemd_requires}
+%{?sysusers_requires_compat}
 Requires:          (mpd-firewalld = %{?epoch}:%{version}-%{release} if firewalld)
 Requires:          ffmpeg-libs%{?_isa}
 
@@ -168,7 +166,7 @@ sed -i -e 's@>= 0.56.0@>= 0.55.0@g'  meson.build
     -Dsndio=disabled \
     -Dchromaprint=disabled \
     -Dgme=disabled \
-%if 0%{?fedora} && 0%{?fedora} < 38
+%if 0%{?rhel} || 0%{?fedora} < 38
     -Dmpcdec=disabled \
 %endif
     -Dshine=disabled \
@@ -251,6 +249,9 @@ rm -rf %{buildroot}%{_docdir}/mpd/
 
 
 %changelog
+* Mon May 22 2023 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.13-1
+- Update to 0.23.13
+
 * Sat Mar 25 2023 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.12-3
 - Use systemd sysusers config to create user and group
 
