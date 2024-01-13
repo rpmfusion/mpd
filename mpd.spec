@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.23.15
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
@@ -194,7 +194,7 @@ touch %{buildroot}%{mpd_statefile}
 
 install -D -p -m644 doc/mpdconf.example %{buildroot}%{mpd_configfile}
 
-rm -rf %{buildroot}%{_docdir}/mpd/
+rm -rf %{buildroot}%{_docdir}/mpd/{AUTHORS,COPYING,NEWS,README.md}
 
 
 %pre
@@ -214,7 +214,7 @@ rm -rf %{buildroot}%{_docdir}/mpd/
 
 
 %files
-%doc AUTHORS NEWS README.md
+%doc AUTHORS NEWS README.md %{_vpath_builddir}/doc/html
 %license COPYING
 %{_bindir}/mpd
 %{_mandir}/man1/mpd.1*
@@ -244,6 +244,9 @@ rm -rf %{buildroot}%{_docdir}/mpd/
 
 
 %changelog
+* Sat Jan 13 2024 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.15-2
+- Install html docs
+
 * Wed Dec 20 2023 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.15-1
 - Update to 0.23.15
 
