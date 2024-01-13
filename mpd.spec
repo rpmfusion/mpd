@@ -194,7 +194,7 @@ touch %{buildroot}%{mpd_statefile}
 
 install -D -p -m644 doc/mpdconf.example %{buildroot}%{mpd_configfile}
 
-rm -rf %{buildroot}%{_docdir}/mpd/{AUTHORS,COPYING,NEWS,README.md}
+rm -rf %{buildroot}%{_docdir}/mpd/
 
 
 %pre
