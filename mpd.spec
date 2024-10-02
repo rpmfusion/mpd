@@ -51,12 +51,10 @@ BuildRequires:     flac-devel
 BuildRequires:     fmt-devel
 BuildRequires:     gcc
 BuildRequires:     gnupg2
-BuildRequires:     jack-audio-connection-kit-devel
 BuildRequires:     lame-devel
 BuildRequires:     libao-devel
 BuildRequires:     libcdio-paranoia-devel
 BuildRequires:     libcurl-devel
-BuildRequires:     libgcrypt-devel
 BuildRequires:     libid3tag-devel
 BuildRequires:     libmad-devel
 BuildRequires:     libmms-devel
@@ -76,18 +74,17 @@ BuildRequires:     mikmod-devel
 BuildRequires:     wildmidi-devel
 %endif
 %if 0%{?fedora}
-BuildRequires:     pipewire-devel > 0.3
+BuildRequires:     libmpcdec-devel
 BuildRequires:     liburing-devel
+BuildRequires:     pipewire-devel > 0.3
+BuildRequires:     pipewire-jack-audio-connection-kit-devel
+%else
+BuildRequires:     jack-audio-connection-kit-devel
 %endif
 BuildRequires:     mpg123-devel
 BuildRequires:     openal-soft-devel
 BuildRequires:     python3-sphinx
 BuildRequires:     twolame-devel
-%if 0%{?fedora} && 0%{?fedora} >= 38
-# Need new version with SV8
-BuildRequires:     libmpcdec-devel
-%endif
-
 BuildRequires:     libogg-devel
 BuildRequires:     libsamplerate-devel
 BuildRequires:     libshout-devel
@@ -100,14 +97,12 @@ BuildRequires:     soxr-devel
 BuildRequires:     sqlite-devel
 BuildRequires:     systemd-devel
 BuildRequires:     wavpack-devel
-BuildRequires:     yajl-devel
 BuildRequires:     zlib-devel
 BuildRequires:     zziplib-devel
 
 %{?systemd_requires}
 %{?sysusers_requires_compat}
 Requires:          (mpd-firewalld = %{?epoch}:%{version}-%{release} if firewalld)
-Requires:          ffmpeg-libs%{?_isa}
 
 %description
 Music Player Daemon (MPD) is a flexible, powerful, server-side application for
@@ -148,6 +143,7 @@ sed -i -e 's@>= 0.56.0@>= 0.55.0@g'  meson.build
     -Dipv6=enabled \
     -Dpipe=true \
 %if 0%{?rhel}
+    -Dmpcdec=disabled \
     -Dio_uring=disabled \
 %if 0%{?rhel} > 8
     -Dlibmpdclient=disabled \
@@ -163,11 +159,11 @@ sed -i -e 's@>= 0.56.0@>= 0.55.0@g'  meson.build
     -Dsndio=disabled \
     -Dchromaprint=disabled \
     -Dgme=disabled \
-%if 0%{?rhel} || 0%{?fedora} < 38
-    -Dmpcdec=disabled \
-%endif
     -Dshine=disabled \
-    -Dtremor=disabled
+    -Dtremor=disabled \
+    -Dyajl=disabled \
+    -Dqobuz=disabled \
+    -Dsoundcloud=disabled
 
 %{meson_build}
 
