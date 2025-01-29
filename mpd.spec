@@ -36,6 +36,7 @@ Source6:        mpd.sysusers
 Patch0:         mpd-0.23-mpdconf.patch
 Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
 Patch2:         timidity_path.patch
+Patch3:         fmt.patch
 
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
