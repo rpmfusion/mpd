@@ -16,8 +16,8 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.23.16
-Release:        2%{?dist}
+Version:        0.23.17
+Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
@@ -36,7 +36,6 @@ Source6:        mpd.sysusers
 Patch0:         mpd-0.23-mpdconf.patch
 Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
 Patch2:         timidity_path.patch
-Patch3:         fmt.patch
 
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
@@ -241,6 +240,9 @@ rm -rf %{buildroot}%{_docdir}/mpd/
 
 
 %changelog
+* Thu Jan 30 2025 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.17-1
+- Update to 0.23.17
+
 * Tue Jan 28 2025 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 1:0.23.16-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_42_Mass_Rebuild
 
