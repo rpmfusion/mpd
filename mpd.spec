@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.23.17
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
@@ -99,8 +99,13 @@ BuildRequires:     zlib-devel
 BuildRequires:     zziplib-devel
 
 %{?systemd_requires}
+%if 0%{?fedora} < 42
 %{?sysusers_requires_compat}
 Requires:          (mpd-firewalld = %{?epoch}:%{version}-%{release} if firewalld)
+%else
+Obsoletes:         mpd-firewalld < %{?epoch}:%{version}-%{release}
+Provides:          mpd-firewalld = %{?epoch}:%{version}-%{release}
+%endif
 
 %description
 Music Player Daemon (MPD) is a flexible, powerful, server-side application for
@@ -111,7 +116,7 @@ for streaming music to a stereo system over a local network. There are many
 GUI and command-line applications to choose from that act as a front-end for
 browsing and playing your MPD music collection.
 
-
+%if 0%{?fedora} < 42
 %package firewalld
 Summary: FirewallD metadata file for MPD
 Requires: firewalld-filesystem
@@ -119,7 +124,7 @@ Requires(post): firewalld-filesystem
 
 %description firewalld
 This package contains FirewallD file for MPD.
-
+%endif
 
 %prep
 %{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
@@ -192,9 +197,10 @@ install -D -p -m644 doc/mpdconf.example %{buildroot}%{mpd_configfile}
 
 rm -rf %{buildroot}%{_docdir}/mpd/
 
-
+%if 0%{?fedora} < 42
 %pre
 %sysusers_create_compat %{SOURCE6}
+%endif
 
 %post
 %systemd_post mpd.service
@@ -204,9 +210,6 @@ rm -rf %{buildroot}%{_docdir}/mpd/
 
 %postun
 %systemd_postun_with_restart mpd.service
-
-%post firewalld
-%firewalld_reload
 
 
 %files
@@ -235,11 +238,19 @@ rm -rf %{buildroot}%{_docdir}/mpd/
 %ghost %{mpd_logfile}
 %ghost %{mpd_statefile}
 
+%if 0%{?fedora} < 42
+%post firewalld
+%firewalld_reload
 %files firewalld
 %{_prefix}/lib/firewalld/services/mpd.xml
-
+%else
+%exclude %{_prefix}/lib/firewalld/services/mpd.xml
+%endif
 
 %changelog
+* Thu Feb 13 2025 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.17-2
+- Rebuild for firewalld change
+
 * Thu Jan 30 2025 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.17-1
 - Update to 0.23.17
 
