@@ -1,0 +1,226 @@
+From 913e1ac84800439060d44db5b0a3a3c0c99b59c8 Mon Sep 17 00:00:00 2001
+From: BlackEagle <ike.devolder@gmail.com>
+Date: Wed, 29 Jan 2025 20:27:04 +0100
+Subject: [PATCH 1/2] Minimal backport to support libnfs 6 on v0.23
+
+This is based on the following commits in master:
+- https://github.com/MusicPlayerDaemon/MPD/commit/31e583e9f8d14b9e67eab2581be8e21cd5712b47
+- https://github.com/MusicPlayerDaemon/MPD/commit/58e3b830e9a6826fef8950bccd7b173bf56de8b2
+
+also changed cpp_std=c++20 to facilitate the use of span
+---
+ meson.build                |  4 ++--
+ src/lib/nfs/Connection.cxx | 33 +++++++++++++++++++++++++++++----
+ src/lib/nfs/Connection.hxx | 15 +++++++++++++--
+ src/lib/nfs/FileReader.cxx | 13 +++++++++++++
+ src/lib/nfs/FileReader.hxx |  8 ++++++++
+ src/lib/nfs/meson.build    |  7 +++++++
+ 6 files changed, 72 insertions(+), 8 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index 6777a12f78..0e0be7226d 100644
+--- a/meson.build
++++ b/meson.build
+@@ -6,8 +6,8 @@ project(
+   default_options: [
+     'c_std=c11',
+     'build.c_std=c11',
+-    'cpp_std=c++17',
+-    'build.cpp_std=c++17',
++    'cpp_std=c++20',
++    'build.cpp_std=c++20',
+     'warning_level=3',
+ 
+     # If we build those libraries as Meson subproject, they shall be
+diff --git a/src/lib/nfs/Connection.cxx b/src/lib/nfs/Connection.cxx
+index c9d7985f7d..a44004ba6e 100644
+--- a/src/lib/nfs/Connection.cxx
++++ b/src/lib/nfs/Connection.cxx
+@@ -103,11 +103,25 @@ NfsConnection::CancellableCallback::Stat(nfs_context *ctx,
+ 
+ inline void
+ NfsConnection::CancellableCallback::Read(nfs_context *ctx, struct nfsfh *fh,
+-					 uint64_t offset, size_t size)
++					 uint64_t offset,
++#ifdef LIBNFS_API_2
++					 std::span<std::byte> dest
++#else
++					 std::size_t size
++#endif
++	)
+ {
+ 	assert(connection.GetEventLoop().IsInside());
+ 
+-	int result = nfs_pread_async(ctx, fh, offset, size, Callback, this);
++	int result = nfs_pread_async(ctx, fh,
++#ifdef LIBNFS_API_2
++				     dest.data(), dest.size(),
++#endif
++				     offset,
++#ifndef LIBNFS_API_2
++				     size,
++#endif
++				     Callback, this);
+ 	if (result < 0)
+ 		throw FormatRuntimeError("nfs_pread_async() failed: %s",
+ 					 nfs_get_error(ctx));
+@@ -329,7 +343,12 @@ NfsConnection::Stat(struct nfsfh *fh, NfsCallback &callback)
+ }
+ 
+ void
+-NfsConnection::Read(struct nfsfh *fh, uint64_t offset, size_t size,
++NfsConnection::Read(struct nfsfh *fh, uint64_t offset,
++#ifdef LIBNFS_API_2
++		    std::span<std::byte> dest,
++#else
++		    std::size_t size,
++#endif
+ 		    NfsCallback &callback)
+ {
+ 	assert(GetEventLoop().IsInside());
+@@ -337,7 +356,13 @@ NfsConnection::Read(struct nfsfh *fh, uint64_t offset, size_t size,
+ 
+ 	auto &c = callbacks.Add(callback, *this, false);
+ 	try {
+-		c.Read(context, fh, offset, size);
++		c.Read(context, fh, offset,
++#ifdef LIBNFS_API_2
++		       dest
++#else
++		       size
++#endif
++			);
+ 	} catch (...) {
+ 		callbacks.Remove(c);
+ 		throw;
+diff --git a/src/lib/nfs/Connection.hxx b/src/lib/nfs/Connection.hxx
+index 49987e2c35..0fea1f3036 100644
+--- a/src/lib/nfs/Connection.hxx
++++ b/src/lib/nfs/Connection.hxx
+@@ -71,7 +71,13 @@ class NfsConnection {
+ 		void Open(nfs_context *context, const char *path, int flags);
+ 		void Stat(nfs_context *context, struct nfsfh *fh);
+ 		void Read(nfs_context *context, struct nfsfh *fh,
+-			  uint64_t offset, size_t size);
++			  uint64_t offset,
++#ifdef LIBNFS_API_2
++			  std::span<std::byte> dest
++#else
++			  std::size_t size
++#endif
++			);
+ 
+ 		/**
+ 		 * Cancel the operation and schedule a call to
+@@ -193,7 +199,12 @@ public:
+ 	/**
+ 	 * Throws std::runtime_error on error.
+ 	 */
+-	void Read(struct nfsfh *fh, uint64_t offset, size_t size,
++	void Read(struct nfsfh *fh, uint64_t offset,
++#ifdef LIBNFS_API_2
++		  std::span<std::byte> dest,
++#else
++		  std::size_t size,
++#endif
+ 		  NfsCallback &callback);
+ 
+ 	void Cancel(NfsCallback &callback) noexcept;
+diff --git a/src/lib/nfs/FileReader.cxx b/src/lib/nfs/FileReader.cxx
+index 6e9457d791..6bd75e9ea7 100644
+--- a/src/lib/nfs/FileReader.cxx
++++ b/src/lib/nfs/FileReader.cxx
+@@ -129,7 +129,15 @@ NfsFileReader::Read(uint64_t offset, size_t size)
+ {
+ 	assert(state == State::IDLE);
+ 
++#ifdef LIBNFS_API_2
++	assert(!read_buffer);
++	// TOOD read into caller-provided buffer
++	read_buffer = std::make_unique<std::byte[]>(size);
++	connection->Read(fh, offset, {read_buffer.get(), size}, *this);
++#else
+ 	connection->Read(fh, offset, size, *this);
++#endif
++
+ 	state = State::READ;
+ }
+ 
+@@ -137,7 +145,12 @@ void
+ NfsFileReader::CancelRead() noexcept
+ {
+ 	if (state == State::READ) {
++#ifdef LIBNFS_API_2
++		assert(read_buffer);
++		read_buffer.release();
++#endif
+ 		connection->Cancel(*this);
++
+ 		state = State::IDLE;
+ 	}
+ }
+diff --git a/src/lib/nfs/FileReader.hxx b/src/lib/nfs/FileReader.hxx
+index 8d257efdd5..a2b9e9c60c 100644
+--- a/src/lib/nfs/FileReader.hxx
++++ b/src/lib/nfs/FileReader.hxx
+@@ -32,6 +32,10 @@
+ 
+ #include <sys/stat.h>
+ 
++#ifdef LIBNFS_API_2
++#include <memory>
++#endif
++
+ struct nfsfh;
+ class NfsConnection;
+ 
+@@ -68,6 +72,10 @@ class NfsFileReader : NfsLease, NfsCallback {
+ 	 */
+ 	InjectEvent defer_open;
+ 
++#ifdef LIBNFS_API_2
++	std::unique_ptr<std::byte[]> read_buffer;
++#endif
++
+ public:
+ 	NfsFileReader() noexcept;
+ 	~NfsFileReader() noexcept;
+diff --git a/src/lib/nfs/meson.build b/src/lib/nfs/meson.build
+index 274ee7b47b..45738dcb58 100644
+--- a/src/lib/nfs/meson.build
++++ b/src/lib/nfs/meson.build
+@@ -4,6 +4,13 @@ if not nfs_dep.found()
+   subdir_done()
+ endif
+ 
++if nfs_dep.version().version_compare('>=6')
++  # libnfs has no version macro therefore we must detect the API
++  # version 2 at configure time
++  nfs_dep = declare_dependency(compile_args: '-DLIBNFS_API_2',
++                               dependencies: nfs_dep)
++endif
++
+ nfs = static_library(
+   'nfs',
+   'Connection.cxx',
+
+From 19e9310ded81942542643bb54dae3221d034de16 Mon Sep 17 00:00:00 2001
+From: BlackEagle <ike.devolder@gmail.com>
+Date: Thu, 30 Jan 2025 07:22:17 +0100
+Subject: [PATCH 2/2] Revert "lib/nfs/meson.build: reject libnfs 6"
+
+This reverts commit c48dbd5dd43506842e4f1478f386e9a744663d5a.
+---
+ src/lib/nfs/meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/lib/nfs/meson.build b/src/lib/nfs/meson.build
+index 45738dcb58..586a713915 100644
+--- a/src/lib/nfs/meson.build
++++ b/src/lib/nfs/meson.build
+@@ -1,4 +1,4 @@
+-nfs_dep = dependency('libnfs', version: ['>= 4', '< 6'], required: get_option('nfs'))
++nfs_dep = dependency('libnfs', version: '>= 4', required: get_option('nfs'))
+ conf.set('ENABLE_NFS', nfs_dep.found())
+ if not nfs_dep.found()
+   subdir_done()

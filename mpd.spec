@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.23.17
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
@@ -36,6 +36,7 @@ Source6:        mpd.sysusers
 Patch0:         mpd-0.23-mpdconf.patch
 Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
 Patch2:         timidity_path.patch
+Patch3:         https://github.com/MusicPlayerDaemon/MPD/pull/2198.patch#/libnfsv6.patch
 
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
@@ -248,6 +249,9 @@ rm -rf %{buildroot}%{_docdir}/mpd/
 %endif
 
 %changelog
+* Fri Feb 21 2025 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.17-3
+- Patch for new libnfs
+
 * Thu Feb 13 2025 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.17-2
 - Rebuild for firewalld change
 
