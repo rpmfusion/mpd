@@ -16,14 +16,14 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.23.17
-Release:        3%{?dist}
+Version:        0.24
+Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
 
-Source0:        %{url}/download/mpd/0.23/mpd-%{version}.tar.xz
-Source1:        %{url}/download/mpd/0.23/mpd-%{version}.tar.xz.sig
+Source0:        %{url}/download/mpd/0.24/mpd-%{version}.tar.xz
+Source1:        %{url}/download/mpd/0.24/mpd-%{version}.tar.xz.sig
 Source2:        https://pgp.key-server.io/download/0x236E8A58C6DB4512#/gpgkey.asc
 # Note that the 0.18.x branch doesn't yet work with Fedora's version of
 # libmpcdec which needs updating.
@@ -33,10 +33,9 @@ Source3:        mpd.logrotate
 Source4:        mpd.tmpfiles.d
 Source5:        mpd.xml
 Source6:        mpd.sysusers
-Patch0:         mpd-0.23-mpdconf.patch
-Patch1:         mpd-0.20-remove_NoNewPrivileges.patch
+Patch0:         mpd-0.24-mpdconf.patch
+Patch1:         mpd-0.24-remove_NoNewPrivileges.patch
 Patch2:         timidity_path.patch
-Patch3:         https://github.com/MusicPlayerDaemon/MPD/pull/2198.patch#/libnfsv6.patch
 
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel
@@ -83,6 +82,7 @@ BuildRequires:     jack-audio-connection-kit-devel
 BuildRequires:     mpg123-devel
 BuildRequires:     openal-soft-devel
 BuildRequires:     python3-sphinx
+BuildRequires:     python3-sphinx_rtd_theme
 BuildRequires:     twolame-devel
 BuildRequires:     libogg-devel
 BuildRequires:     libsamplerate-devel
@@ -249,6 +249,9 @@ rm -rf %{buildroot}%{_docdir}/mpd/
 %endif
 
 %changelog
+* Wed Mar 12 2025 Leigh Scott <leigh123linux@gmail.com> - 1:0.24-1
+- Update to 0.24
+
 * Fri Feb 21 2025 Leigh Scott <leigh123linux@gmail.com> - 1:0.23.17-3
 - Patch for new libnfs
 

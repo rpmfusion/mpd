@@ -1,0 +1,101 @@
+--- a/doc/mpdconf.example
++++ b/doc/mpdconf.example
+@@ -11,7 +11,7 @@
+ # file:// protocol) or streaming files over an accepted protocol.
+ #
+ #music_directory		"$XDG_MUSIC_DIR"
+-#music_directory		"~/music"
++music_directory "/var/lib/mpd/music"
+ #
+ # This setting sets the MPD internal playlist directory. The purpose of this
+ # directory is storage for playlists created by MPD. The server will use
+@@ -19,7 +19,7 @@
+ # format. This setting defaults to playlist saving being disabled.
+ #
+ #playlist_directory		"$XDG_CONFIG_HOME/mpd/playlists"
+-#playlist_directory		"~/.mpd/playlists"
++playlist_directory "/var/lib/mpd/playlists"
+ #
+ # This setting sets the location of the MPD database. This file is used to
+ # load the database at server start up and store the database while the
+@@ -28,7 +28,7 @@
+ # files over an accepted protocol.
+ #
+ #db_file			"$XDG_CACHE_HOME/mpd/database"
+-#db_file			"~/.mpd/database"
++db_file "/var/lib/mpd/mpd.db"
+ 
+ # These settings are the locations for the daemon log files for the daemon.
+ #
+@@ -39,7 +39,7 @@
+ # defaults to the systemd journal, which is fine.
+ #
+ #log_file			"$XDG_CACHE_HOME/mpd/log"
+-#log_file			"~/.mpd/log"
++log_file "/var/log/mpd/mpd.log"
+ 
+ # This setting sets the location of the file which stores the process ID
+ # for use of mpd --kill and some init scripts. This setting is disabled by
+@@ -56,13 +56,13 @@
+ # state will be reset on server start up.
+ #
+ #state_file			"$XDG_RUNTIME_DIR/mpd/state"
+-#state_file			"~/.mpd/state"
++state_file "/var/lib/mpd/mpdstate"
+ #
+ # The location of the sticker database.  This is a database which
+ # manages dynamic information attached to songs.
+ #
+ #sticker_file			"$XDG_CACHE_HOME/sticker.sql"
+-#sticker_file			"~/.mpd/sticker.sql"
++#sticker_file			"/var/lib/mpd/sticker.sql"
+ #
+ ###############################################################################
+ 
+@@ -74,7 +74,7 @@
+ # initialization. This setting is disabled by default and MPD is run as the
+ # current user.
+ #
+-#user				"nobody"
++user "mpd"
+ #
+ # This setting specifies the group that MPD will run as. If not specified
+ # primary group of user specified with "user" setting will be used (if set).
+@@ -93,7 +93,7 @@
+ #
+ # And for Unix Socket
+ #bind_to_address		"$XDG_RUNTIME_DIR/mpd/socket"
+-#bind_to_address		"~/.mpd/socket"
++#bind_to_address		"/run/mpd/socket"
+ #
+ # This setting is the TCP port that is desired for the daemon to get assigned
+ # to.
+@@ -295,13 +295,13 @@
+ #
+ # An example of a pulseaudio output (streaming to a remote pulseaudio server)
+ #
+-#audio_output {
+-#	type		"pulse"
+-#	name		"My Pulse Output"
++audio_output {
++	type		"pulse"
++	name		"My Pulse Output"
+ ##	server		"remote_server"		# optional
+ ##	sink		"remote_server_sink"	# optional
+ ##	media_role	"media_role"		#optional
+-#}
++}
+ #
+ # An example of a winmm output (Windows multimedia API).
+ #
+@@ -397,6 +397,6 @@
+ # If file or directory names do not display correctly for your locale then you
+ # may need to modify this setting.
+ #
+-#filesystem_charset		"UTF-8"
+-#
+-###############################################################################
++filesystem_charset		"UTF-8"
++#
++###############################################################################
+

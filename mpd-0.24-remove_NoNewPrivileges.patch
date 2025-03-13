@@ -1,6 +1,6 @@
 --- a/systemd/system/mpd.service.in
 +++ b/systemd/system/mpd.service.in
-@@ -15,7 +15,6 @@
+@@ -23,7 +23,6 @@ LimitMEMLOCK=64M
  ProtectSystem=yes
  
  # more paranoid security settings
@@ -8,15 +8,13 @@
  ProtectKernelTunables=yes
  ProtectControlGroups=yes
  ProtectKernelModules=yes
-
 --- a/systemd/user/mpd.service.in
 +++ b/systemd/user/mpd.service.in
-@@ -15,7 +15,6 @@
+@@ -25,7 +25,6 @@ PrivateUsers=yes
  ProtectSystem=yes
  
  # more paranoid security settings
 -NoNewPrivileges=yes
  ProtectKernelTunables=yes
  ProtectControlGroups=yes
- # AF_NETLINK is required by libsmbclient, or it will exit() .. *sigh*
-
+ RestrictAddressFamilies=@address_families@
