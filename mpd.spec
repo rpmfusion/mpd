@@ -38,66 +38,60 @@ Patch1:         mpd-0.24-remove_NoNewPrivileges.patch
 Patch2:         timidity_path.patch
 
 BuildRequires:     alsa-lib-devel
-BuildRequires:     audiofile-devel
-BuildRequires:     meson
+BuildRequires:     audiofile-devel >= 0.3
+BuildRequires:     meson >= 1.0
 BuildRequires:     boost-devel
 BuildRequires:     bzip2-devel
 BuildRequires:     faad2-devel
 BuildRequires:     ffmpeg-devel
 BuildRequires:     firewalld-filesystem
-BuildRequires:     flac-devel
-BuildRequires:     fmt-devel
+BuildRequires:     flac-devel >= 1.2
+BuildRequires:     fmt-devel >= 9
 BuildRequires:     gcc
 BuildRequires:     gnupg2
 BuildRequires:     lame-devel
 BuildRequires:     libao-devel
-BuildRequires:     libcdio-paranoia-devel
-BuildRequires:     libcurl-devel
+BuildRequires:     libcdio-paranoia-devel >= 10.2+0.93+1
+BuildRequires:     libcurl-devel >= 7.55
 BuildRequires:     libid3tag-devel
 BuildRequires:     libmad-devel
-BuildRequires:     libmms-devel
+BuildRequires:     libmms-devel >= 0.4
 BuildRequires:     libmodplug-devel
 BuildRequires:     avahi-compat-libdns_sd-devel
 BuildRequires:     avahi-devel
 BuildRequires:     dbus-devel
 BuildRequires:     expat-devel
-BuildRequires:     fluidsynth-devel
+BuildRequires:     fluidsynth-devel >= 1.1
 BuildRequires:     libopenmpt-devel
 BuildRequires:     libsndfile-devel
-BuildRequires:     libupnp-devel
-%if 0%{?fedora} || 0%{?rhel} <= 8
-BuildRequires:     libmpdclient-devel
+BuildRequires:     libupnp-devel >= 1.8
+BuildRequires:     libmpdclient-devel >= 2.15
 BuildRequires:     libnfs-devel
-BuildRequires:     mikmod-devel
+BuildRequires:     mikmod-devel >= 3.2
 BuildRequires:     wildmidi-devel
-%endif
-%if 0%{?fedora}
 BuildRequires:     libmpcdec-devel
 BuildRequires:     liburing-devel
 BuildRequires:     pipewire-devel > 0.3
 BuildRequires:     pipewire-jack-audio-connection-kit-devel
-%else
-BuildRequires:     jack-audio-connection-kit-devel
-%endif
 BuildRequires:     mpg123-devel
 BuildRequires:     openal-soft-devel
 BuildRequires:     python3-sphinx
 BuildRequires:     python3-sphinx_rtd_theme
 BuildRequires:     twolame-devel
 BuildRequires:     libogg-devel
-BuildRequires:     libsamplerate-devel
+BuildRequires:     libsamplerate-devel >= 0.1.3
 BuildRequires:     libshout-devel
-BuildRequires:     libsidplayfp-devel
+BuildRequires:     libsidplayfp-devel >= 1.8
 BuildRequires:     libvorbis-devel
 BuildRequires:     opus-devel
 BuildRequires:     pcre2-devel
 BuildRequires:     pkgconfig(libpulse)
-BuildRequires:     soxr-devel
-BuildRequires:     sqlite-devel
+BuildRequires:     soxr-devel >= 0.1.2
+BuildRequires:     sqlite-devel >= 3.7.3
 BuildRequires:     systemd-devel
-BuildRequires:     wavpack-devel
+BuildRequires:     wavpack-devel >= 5
 BuildRequires:     zlib-devel
-BuildRequires:     zziplib-devel
+BuildRequires:     zziplib-devel >= 0.13
 
 %{?systemd_requires}
 %if 0%{?fedora} < 42
@@ -134,11 +128,6 @@ This package contains FirewallD file for MPD.
 # Force python3-sphinx
 sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
 
-# redhat meson is too old
-%if 0%{?rhel}
-sed -i -e 's@>= 0.56.0@>= 0.55.0@g'  meson.build
-%endif
-
 %build
 %{meson} \
     -Dsystemd_system_unit_dir=%{_unitdir} \
@@ -146,18 +135,6 @@ sed -i -e 's@>= 0.56.0@>= 0.55.0@g'  meson.build
     -Dadplug=disabled \
     -Dipv6=enabled \
     -Dpipe=true \
-%if 0%{?rhel}
-    -Dmpcdec=disabled \
-    -Dio_uring=disabled \
-%if 0%{?rhel} > 8
-    -Dlibmpdclient=disabled \
-    -Dmikmod=disabled \
-    -Dnfs=disabled \
-    -Dwildmidi=disabled \
-%endif
-    -Dpipewire=disabled \
-    -Dshout=disabled \
-%endif
     -Ddocumentation=auto \
     -Dsolaris_output=disabled \
     -Dsndio=disabled \
