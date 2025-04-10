@@ -16,7 +16,7 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.24.2
+Version:        0.24.3
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
@@ -62,6 +62,7 @@ BuildRequires:     avahi-devel
 BuildRequires:     dbus-devel
 BuildRequires:     expat-devel
 BuildRequires:     fluidsynth-devel >= 1.1
+BuildRequires:     json-devel
 BuildRequires:     libopenmpt-devel
 BuildRequires:     libsndfile-devel
 BuildRequires:     libupnp-devel >= 1.8
@@ -141,10 +142,7 @@ sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
     -Dchromaprint=disabled \
     -Dgme=disabled \
     -Dshine=disabled \
-    -Dtremor=disabled \
-    -Dyajl=disabled \
-    -Dqobuz=disabled \
-    -Dsoundcloud=disabled
+    -Dtremor=disabled
 
 %{meson_build}
 
@@ -226,6 +224,9 @@ rm -rf %{buildroot}%{_docdir}/mpd/
 %endif
 
 %changelog
+* Thu Apr 10 2025 Leigh Scott <leigh123linux@gmail.com> - 1:0.24.3-1
+- Update to 0.24.3
+
 * Wed Mar 26 2025 Leigh Scott <leigh123linux@gmail.com> - 1:0.24.2-1
 - Update to 0.24.2
 
