@@ -17,7 +17,7 @@
 Name:           mpd
 Epoch:          1
 Version:        0.24.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
@@ -224,6 +224,9 @@ rm -rf %{buildroot}%{_docdir}/mpd/
 %endif
 
 %changelog
+* Sun Jul 27 2025 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 1:0.24.4-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_43_Mass_Rebuild
+
 * Fri May 30 2025 Leigh Scott <leigh123linux@gmail.com> - 1:0.24.4-2
 - Rebuild for new flac .so version
 
