@@ -16,7 +16,7 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.24.5
+Version:        0.24.6
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
@@ -224,6 +224,9 @@ rm -rf %{buildroot}%{_docdir}/mpd/
 %endif
 
 %changelog
+* Mon Oct 20 2025 RPM Fusion - 1:0.24.6-1
+- Update to 0.24.6
+
 * Sun Aug 03 2025 Leigh Scott <leigh123linux@gmail.com> - 1:0.24.5-1
 - Update to 0.24.5
 
