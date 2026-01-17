@@ -36,6 +36,7 @@ Source6:        mpd.sysusers
 Patch0:         mpd-0.24-mpdconf.patch
 Patch1:         mpd-0.24-remove_NoNewPrivileges.patch
 Patch2:         timidity_path.patch
+Patch3:         mpd-0.24-glibc_buildfix.patch
 
 BuildRequires:     alsa-lib-devel
 BuildRequires:     audiofile-devel >= 0.3
