@@ -1,5 +1,6 @@
---- a/doc/mpdconf.example
-+++ b/doc/mpdconf.example
+diff -uNrp a/doc/mpdconf.example b/doc/mpdconf.example
+--- a/doc/mpdconf.example	2026-01-16 09:40:55.000000000 +0000
++++ b/doc/mpdconf.example	2026-01-17 01:02:55.061705971 +0000
 @@ -11,7 +11,7 @@
  # file:// protocol) or streaming files over an accepted protocol.
  #
@@ -59,9 +60,9 @@
 -#user				"nobody"
 +user "mpd"
  #
- # This setting specifies the group that MPD will run as. If not specified
- # primary group of user specified with "user" setting will be used (if set).
-@@ -93,7 +93,7 @@
+ # This setting sets the address for the daemon to listen on. Careful attention
+ # should be paid if this is assigned to anything other than the default, any.
+@@ -86,7 +86,7 @@
  #
  # And for Unix Socket
  #bind_to_address		"$XDG_RUNTIME_DIR/mpd/socket"
@@ -70,7 +71,7 @@
  #
  # This setting is the TCP port that is desired for the daemon to get assigned
  # to.
-@@ -295,13 +295,13 @@
+@@ -288,13 +288,13 @@ input {
  #
  # An example of a pulseaudio output (streaming to a remote pulseaudio server)
  #
@@ -88,14 +89,11 @@
  #
  # An example of a winmm output (Windows multimedia API).
  #
-@@ -397,6 +397,6 @@
+@@ -390,6 +390,6 @@ input {
  # If file or directory names do not display correctly for your locale then you
  # may need to modify this setting.
  #
 -#filesystem_charset		"UTF-8"
--#
--###############################################################################
 +filesystem_charset		"UTF-8"
-+#
-+###############################################################################
-
+ #
+ ###############################################################################
