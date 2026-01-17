@@ -1,16 +1,31 @@
 diff -uNrp a/src/system/linux/openat2.h b/src/system/linux/openat2.h
 --- a/src/system/linux/openat2.h	2026-01-16 09:40:55.000000000 +0000
-+++ b/src/system/linux/openat2.h	2026-01-17 01:27:13.888089596 +0000
-@@ -9,9 +9,12 @@
- #include <sys/syscall.h>
- #include <unistd.h>
++++ b/src/system/linux/openat2.h	2026-01-17 09:23:39.652201430 +0000
+@@ -2,16 +2,16 @@
+ // Copyright CM4all GmbH
+ // author: Max Kellermann <max.kellermann@ionos.com>
  
-+#if !defined(__GLIBC__) || !defined(__GLIBC_MINOR__) || \
-+    (__GLIBC__ < 2) || (__GLIBC__ == 2 && __GLIBC_MINOR__ < 34)
- static inline int
- openat2(int dirfd, const char *pathname,
- 	const struct open_how *how, size_t size)
- {
- 	return syscall(__NR_openat2, dirfd, pathname, how, size);
- }
-+#endif
+-#pragma once
++//#pragma once
+ 
+-#include <fcntl.h> // for O_*
+-#include <linux/openat2.h> // for RESOLVE_*
+-#include <sys/syscall.h>
+-#include <unistd.h>
++//#include <fcntl.h> // for O_*
++//#include <linux/openat2.h> // for RESOLVE_*
++//#include <sys/syscall.h>
++//#include <unistd.h>
+ 
+-static inline int
+-openat2(int dirfd, const char *pathname,
+-	const struct open_how *how, size_t size)
+-{
+-	return syscall(__NR_openat2, dirfd, pathname, how, size);
+-}
++//static inline int
++//openat2(int dirfd, const char *pathname,
++//	const struct open_how *how, size_t size)
++//{
++//	return syscall(__NR_openat2, dirfd, pathname, how, size);
++//}
