@@ -16,8 +16,8 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.24.7
-Release:        2%{?dist}
+Version:        0.24.8
+Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
 URL:            https://www.musicpd.org
@@ -128,9 +128,6 @@ This package contains FirewallD file for MPD.
 
 # Force python3-sphinx
 sed -i -e 's@sphinx-build@sphinx-build-3@g' doc/meson.build
-%if 0%{?fedora} > 43
-sed -i -e 's@#include "system/linux/openat2.h"@//#include "system/linux/openat2.h"@g' src/io/Open.cxx
-%endif
 
 %build
 %{meson} \
@@ -227,6 +224,9 @@ rm -rf %{buildroot}%{_docdir}/mpd/
 %endif
 
 %changelog
+* Mon Jan 26 2026 Leigh Scott <leigh123linux@gmail.com> - 1:0.24.8-1
+- Update to 0.24.8
+
 * Sat Jan 17 2026 Leigh Scott <leigh123linux@gmail.com> - 1:0.24.7-2
 - Fix glibc build issue
 
