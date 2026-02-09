@@ -1,0 +1,63 @@
+From fd958dfce6c0d75a23b76da460366710eb50302c Mon Sep 17 00:00:00 2001
+From: Max Kellermann <max.kellermann@gmail.com>
+Date: Mon, 9 Feb 2026 17:32:42 +0100
+Subject: [PATCH] lib/upnp/meson.build: refuse to build with libupnp >= 1.14.26
+ due to API breakage
+
+This avoids MPD build breakages for users which have libupnp with the
+API-breaking commit
+ https://github.com/pupnp/pupnp/commit/25d4bd0b9f8025ff4a7fb714b907f580e9d7efa0
+
+We once had the conditional `const` loooong ago, but it was removed by
+commit 736a696f9804504479805eec91efa0779a2a7650 ("drop support for
+libupnp versions older than 1.8").  I don't want to add another
+compile-time conditional because I don't understand the API change
+yet.  I'm not even sure anybody even uses MPD with UPnP.  Let's see if
+anybody complains (and re-submits the old pre-1.8 workaround, but I'd
+prefer if the pupnp project reverts the API breakage instead).
+
+See https://github.com/pupnp/pupnp/issues/528
+---
+ NEWS                     |  2 ++
+ src/lib/upnp/meson.build | 11 +++++++++++
+ 2 files changed, 13 insertions(+)
+
+diff --git a/NEWS b/NEWS
+index af16adab36..31e28a4b15 100644
+--- a/NEWS
++++ b/NEWS
+@@ -1,4 +1,6 @@
+ ver 0.24.9 (not yet released)
++* database
++  - upnp: refuse to build with libupnp >= 1.14.26 due to API breakage
+ 
+ ver 0.24.8 (2026/01/26)
+ * input
+diff --git a/src/lib/upnp/meson.build b/src/lib/upnp/meson.build
+index 5af5326d45..9c2c7bac1f 100644
+--- a/src/lib/upnp/meson.build
++++ b/src/lib/upnp/meson.build
+@@ -12,12 +12,23 @@ endif
+ 
+ if upnp_option == 'auto'
+   upnp_dep = dependency('libupnp', version: '>= 1.8', required: false)
++
++  if upnp_dep.found() and upnp_dep.version().version_compare('>= 1.14.26')
++    warning('Your libupnp version is known to be broken, see https://github.com/pupnp/pupnp/issues/528 - disabling')
++    upnp_dep = dependency('', required: false)
++  endif
++
+   conf.set('USING_PUPNP', upnp_dep.found())
+   if not upnp_dep.found()
+     upnp_dep = dependency('libnpupnp', version: '>= 1.8', required: false)
+   endif
+ elif upnp_option == 'pupnp'
+   upnp_dep = dependency('libupnp', version: '>= 1.8', required: true)
++
++  if upnp_dep.found() and upnp_dep.version().version_compare('>= 1.14.26')
++    error('Your libupnp version is known to be broken, see https://github.com/pupnp/pupnp/issues/528')
++  endif
++
+   conf.set('USING_PUPNP', true)
+ elif upnp_option == 'npupnp'
+   upnp_dep = dependency('libnpupnp', required: true)
