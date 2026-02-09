@@ -18,21 +18,9 @@ prefer if the pupnp project reverts the API breakage instead).
 
 See https://github.com/pupnp/pupnp/issues/528
 ---
- NEWS                     |  2 ++
  src/lib/upnp/meson.build | 11 +++++++++++
- 2 files changed, 13 insertions(+)
+ 1 files changed, 11 insertions(+)
 
-diff --git a/NEWS b/NEWS
-index af16adab36..31e28a4b15 100644
---- a/NEWS
-+++ b/NEWS
-@@ -1,4 +1,6 @@
- ver 0.24.9 (not yet released)
-+* database
-+  - upnp: refuse to build with libupnp >= 1.14.26 due to API breakage
- 
- ver 0.24.8 (2026/01/26)
- * input
 diff --git a/src/lib/upnp/meson.build b/src/lib/upnp/meson.build
 index 5af5326d45..9c2c7bac1f 100644
 --- a/src/lib/upnp/meson.build
