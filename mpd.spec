@@ -16,7 +16,7 @@
 
 Name:           mpd
 Epoch:          1
-Version:        0.24.10
+Version:        0.24.11
 Release:        1%{?dist}
 Summary:        The Music Player Daemon
 License:        GPLv2+
@@ -31,8 +31,7 @@ Source2:        https://pgp.key-server.io/download/0x236E8A58C6DB4512#/gpgkey.as
 # http://bugs.musicpd.org/view.php?id=3814#bugnotes
 Source3:        mpd.logrotate
 Source4:        mpd.tmpfiles.d
-Source5:        mpd.xml
-Source6:        mpd.sysusers
+Source5:        mpd.sysusers
 Patch0:         mpd-0.24-mpdconf.patch
 Patch1:         mpd-0.24-remove_NoNewPrivileges.patch
 Patch2:         timidity_path.patch
@@ -44,7 +43,6 @@ BuildRequires:     boost-devel
 BuildRequires:     bzip2-devel
 BuildRequires:     faad2-devel
 BuildRequires:     ffmpeg-devel
-BuildRequires:     firewalld-filesystem
 BuildRequires:     flac-devel >= 1.2
 BuildRequires:     fmt-devel >= 9
 BuildRequires:     gcc
@@ -94,14 +92,8 @@ BuildRequires:     wavpack-devel >= 5
 BuildRequires:     zlib-devel
 BuildRequires:     zziplib-devel >= 0.13
 
-%{?systemd_requires}
-%if 0%{?fedora} < 42
-%{?sysusers_requires_compat}
-Requires:          (mpd-firewalld = %{?epoch}:%{version}-%{release} if firewalld)
-%else
 Obsoletes:         mpd-firewalld < %{?epoch}:%{version}-%{release}
 Provides:          mpd-firewalld = %{?epoch}:%{version}-%{release}
-%endif
 
 %description
 Music Player Daemon (MPD) is a flexible, powerful, server-side application for
@@ -112,15 +104,6 @@ for streaming music to a stereo system over a local network. There are many
 GUI and command-line applications to choose from that act as a front-end for
 browsing and playing your MPD music collection.
 
-%if 0%{?fedora} < 42
-%package firewalld
-Summary: FirewallD metadata file for MPD
-Requires: firewalld-filesystem
-Requires(post): firewalld-filesystem
-
-%description firewalld
-This package contains FirewallD file for MPD.
-%endif
 
 %prep
 %{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
@@ -155,8 +138,6 @@ install -p -D -m 0644 %{SOURCE3} \
 install -p -D -m 0644 %{SOURCE4} \
     %{buildroot}%{_prefix}/lib/tmpfiles.d/mpd.conf
 install -p -D -m 0644 %{SOURCE5} \
-    %{buildroot}%{_prefix}/lib/firewalld/services/mpd.xml
-install -p -D -m 0644 %{SOURCE6} \
     %{buildroot}%{_sysusersdir}/mpd.conf
 mkdir -p %{buildroot}/run
 install -d -m 0755 %{buildroot}/%{mpd_rundir}
@@ -173,11 +154,6 @@ install -D -p -m644 doc/mpdconf.example %{buildroot}%{mpd_configfile}
 
 rm -rf %{buildroot}%{_docdir}/mpd/
 
-%if 0%{?fedora} < 42
-%pre
-%sysusers_create_compat %{SOURCE6}
-%endif
-
 %post
 %systemd_post mpd.service
 
@@ -186,7 +162,6 @@ rm -rf %{buildroot}%{_docdir}/mpd/
 
 %postun
 %systemd_postun_with_restart mpd.service
-
 
 %files
 %doc AUTHORS NEWS README.md %{_vpath_builddir}/doc/html
@@ -214,16 +189,10 @@ rm -rf %{buildroot}%{_docdir}/mpd/
 %ghost %{mpd_logfile}
 %ghost %{mpd_statefile}
 
-%if 0%{?fedora} < 42
-%post firewalld
-%firewalld_reload
-%files firewalld
-%{_prefix}/lib/firewalld/services/mpd.xml
-%else
-%exclude %{_prefix}/lib/firewalld/services/mpd.xml
-%endif
-
 %changelog
+* Fri May 15 2026 Leigh Scott <leigh123linux@gmail.com> - 1:0.24.11-1
+- Update to 0.24.11
+
 * Wed May 06 2026 Leigh Scott <leigh123linux@gmail.com> - 1:0.24.10-1
 - Update to 0.24.10
 
