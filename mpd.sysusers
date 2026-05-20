@@ -1,3 +1,0 @@
-#Type Name    ID     GECOS                  Home directory   Shell
-u     mpd     -      "Music Player Daemon"  /var/lib/mpd     /sbin/nologin
-m     mpd     audio

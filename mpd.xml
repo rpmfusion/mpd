@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<service>
-  <short>mpd</short>
-  <description>Music Player Daemon (MPD) is a service to send audio to local or remote clients. Enable this option if remote hosts need to receive output from a MPD running on this machine.</description>
-  <port port="6600" protocol="tcp"/>
-  <port port="8000" protocol="tcp"/>
-</service>
